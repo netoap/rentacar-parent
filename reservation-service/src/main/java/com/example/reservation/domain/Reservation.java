@@ -8,6 +8,12 @@ public class Reservation {
     private Long carId;
     private LocalDateTime reservationDate;
 
+    public Reservation(Long customerId, Long carId, LocalDateTime reservationDate) {
+        this.customerId = customerId;
+        this.carId = carId;
+        this.reservationDate = reservationDate;
+    }
+
     public Reservation(Long id, Long customerId, Long carId, LocalDateTime reservationDate) {
         this.id = id;
         this.customerId = customerId;
