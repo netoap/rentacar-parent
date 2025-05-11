@@ -1,2 +1,9 @@
 com\example\reservation\domain\Reservation.class
 com\example\reservation\ReservationServiceApplication.class
+com\example\reservation\ports\in\CreateReservationUseCase.class
+com\example\reservation\adapters\out\jpa\repository\JpaReservationRepository.class
+com\example\reservation\adapters\out\jpa\entity\JpaReservationEntity.class
+com\example\reservation\adapters\out\jpa\JpaReservationRepositoryAdapter.class
+com\example\reservation\adapters\in\rest\ReservationController.class
+com\example\reservation\ports\out\ReservationRepositoryPort.class
+com\example\reservation\application\ReservationService.class
