@@ -1,13 +1,17 @@
 name: Sync Labels
 
 on:
-  workflow_dispatch: # run manually
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: EndBug/label-sync@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Sync labels from labels.yml
+        uses: EndBug/label-sync@v2
         with:
           config-file: .github/labels.yml
         env:
