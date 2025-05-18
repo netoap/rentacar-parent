@@ -12,6 +12,7 @@
   <modules>
     <module>reservation-service</module>
     <module>car-service</module>
+    <module>customer-service</module>
   </modules>
 
   <properties>
