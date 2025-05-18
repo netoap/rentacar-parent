@@ -41,28 +41,14 @@ labels:
     description: Ready for QA or manual testing
     color: F39C12
 
-  # 📈 Workflow
-  - name: in progress
-    description: Actively being worked on
-    color: F1C40F
-  - name: blocked
-    description: Blocked by another task or issue
-    color: E74C3C
-  - name: ready for review
-    description: Awaiting code review
-    color: 1ABC9C
-  - name: on hold
-    description: Paused or waiting for rescheduling
-    color: BDC3C7
-
   # 🎯 Priority
-  - name: priority: high
+  - name: "priority: high"
     description: Must complete for release
     color: C0392B
-  - name: priority: medium
+  - name: "priority: medium"
     description: Important but not critical
     color: F39C12
-  - name: priority: low
+  - name: "priority: low"
     description: Nice to have
     color: BDC3C7
 
