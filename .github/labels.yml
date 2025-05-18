@@ -23,46 +23,6 @@ labels:
     description: Spring Cloud Config / shared properties
     color: 95A5A6
 
-  - name: infra
-    description: DevOps, CI/CD, Docker, monitoring
-    color: 34495E
-
-  - name: docker
-    description: Docker or container-related issues
-    color: 0E76A8
-
-  - name: ci/cd
-    description: Continuous integration and delivery
-    color: 7F8C8D
-
-  - name: "priority: high"
-    description: Must complete for release
-    color: C0392B
-
-  - name: "priority: medium"
-    description: Important but not critical
-    color: F39C12
-
-  - name: "priority: low"
-    description: Nice to have
-    color: BDC3C7
-
-  - name: tests missing
-    description: Needs unit or integration tests
-    color: C0392B
-
-  - name: test failure
-    description: Failing test or flaky behavior
-    color: E74C3C
-
-  - name: qa
-    description: Ready for QA or manual testing
-    color: F39C12
-
-  - name: in progress
-    description: Actively being worked on
-    color: F1C40F
-
   - name: blocked
     description: Blocked by another task or issue
     color: E74C3C
