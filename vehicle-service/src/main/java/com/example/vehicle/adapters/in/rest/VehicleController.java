@@ -25,14 +25,18 @@ public class VehicleController {
     private final UpdateVehicleUseCase updateVehicleUseCase;
     private final DeleteVehicleUseCase deleteVehicleUseCase;
     private final GetAvailableVehiclesQuery getAvailableVehiclesQuery;
+    private final RentVehicleUseCase rentVehicleUseCase;
+    private final ReturnVehicleUseCase returnVehicleUseCase;
 
-    public VehicleController(AddVehicleUseCase addVehicleUseCase, GetVehicleByIdQuery getVehicleByIdQuery, GetAllVehiclesQuery getAllVehiclesQuery, UpdateVehicleUseCase updateVehicleUseCase, DeleteVehicleUseCase deleteVehicleUseCase, GetAvailableVehiclesQuery getAvailableVehiclesQuery) {
+    public VehicleController(AddVehicleUseCase addVehicleUseCase, GetVehicleByIdQuery getVehicleByIdQuery, GetAllVehiclesQuery getAllVehiclesQuery, UpdateVehicleUseCase updateVehicleUseCase, DeleteVehicleUseCase deleteVehicleUseCase, GetAvailableVehiclesQuery getAvailableVehiclesQuery, RentVehicleUseCase rentVehicleUseCase, ReturnVehicleUseCase returnVehicleUseCase) {
         this.addVehicleUseCase = addVehicleUseCase;
         this.getVehicleByIdQuery = getVehicleByIdQuery;
         this.getAllVehiclesQuery = getAllVehiclesQuery;
         this.updateVehicleUseCase = updateVehicleUseCase;
         this.deleteVehicleUseCase = deleteVehicleUseCase;
         this.getAvailableVehiclesQuery = getAvailableVehiclesQuery;
+        this.rentVehicleUseCase = rentVehicleUseCase;
+        this.returnVehicleUseCase = returnVehicleUseCase;
     }
 
     @PostMapping
@@ -71,4 +75,21 @@ public class VehicleController {
         deleteVehicleUseCase.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Rent a vehicle")
+    @PostMapping("/rent")
+    public ResponseEntity<Void> rentVehicle(
+            @RequestParam Long customerId,
+            @RequestParam Long vehicleId) {
+        rentVehicleUseCase.rentVehicle(customerId, vehicleId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Return a rented vehicle")
+    @PostMapping("/return")
+    public ResponseEntity<Void> returnVehicle(@RequestParam Long vehicleId) {
+        returnVehicleUseCase.returnVehicle(vehicleId);
+        return ResponseEntity.ok().build();
+    }
+
 }

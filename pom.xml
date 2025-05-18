@@ -13,6 +13,7 @@
     <module>reservation-service</module>
     <module>vehicle-service</module>
     <module>customer-service</module>
+    <module>rentacar-commons</module>
   </modules>
 
   <properties>

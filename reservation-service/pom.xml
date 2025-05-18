@@ -39,5 +39,10 @@
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>2.1.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.rentacar</groupId>
+      <artifactId>rentacar-commons</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
 </project>

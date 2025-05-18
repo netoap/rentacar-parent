@@ -1,12 +1,11 @@
 package com.example.reservation.adapters.in.rest;
 
-import com.example.reservation.adapters.in.rest.dto.ReservationRequest;
-import com.example.reservation.adapters.in.rest.dto.ReservationResponse;
 import com.example.reservation.domain.Reservation;
 import com.example.reservation.ports.in.CreateReservationUseCase;
 import com.example.reservation.ports.in.GetReservationsQuery;
+import com.rentacar.commons.dto.CreateReservationRequest;
+import com.rentacar.commons.dto.ReservationResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -31,8 +30,8 @@ public class ReservationController {
 
     @PostMapping
     @Operation(summary = "Create a new reservation")
-    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest request) {
-        Reservation reservation = reservationUseCase.createReservation(request.getCustomerId(), request.getCarId());
+    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody CreateReservationRequest request) {
+        Reservation reservation = reservationUseCase.createReservation(request.getCustomerId(), request.getVehicleId());
         return new ResponseEntity<>(
                 new ReservationResponse(reservation.getId(), reservation.getCustomerId(),
                         reservation.getCarId(), reservation.getReservationDate()),

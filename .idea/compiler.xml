@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="vehicle-service" />
         <module name="customer-service" />
+        <module name="rentacar-commons" />
         <module name="reservation-service" />
       </profile>
     </annotationProcessing>

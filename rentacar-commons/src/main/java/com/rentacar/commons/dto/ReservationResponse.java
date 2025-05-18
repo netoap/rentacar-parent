@@ -1,4 +1,4 @@
-package com.example.reservation.adapters.in.rest.dto;
+package com.rentacar.commons.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,7 +19,6 @@ public class ReservationResponse {
     @Schema(description = "Reservation timestamp", example = "2025-05-11T17:30:00")
     private LocalDateTime reservationDate;
 
-    // Constructor
     public ReservationResponse(Long id, Long customerId, Long carId, LocalDateTime reservationDate) {
         this.id = id;
         this.customerId = customerId;
@@ -27,7 +26,6 @@ public class ReservationResponse {
         this.reservationDate = reservationDate;
     }
 
-    // Getters
     public Long getId() { return id; }
     public Long getCustomerId() { return customerId; }
     public Long getCarId() { return carId; }
