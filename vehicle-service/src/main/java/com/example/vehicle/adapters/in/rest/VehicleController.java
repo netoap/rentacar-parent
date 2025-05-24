@@ -5,6 +5,7 @@ import com.example.vehicle.adapters.in.rest.dto.UpdateVehicleRequest;
 import com.example.vehicle.adapters.in.rest.dto.VehicleResponse;
 import com.example.vehicle.ports.in.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/vehicles")
 @Tag(name = "Vehicle API v1", description = "Vehicle management operations (version 1)")

@@ -1,0 +1,11 @@
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+jwt:
+  secret: dev-256-bit-super-secure-secret
+logging:
+  level:
+    org.springframework: DEBUG
