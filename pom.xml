@@ -14,15 +14,15 @@
     <module>vehicle-service</module>
     <module>customer-service</module>
     <module>rentacar-commons</module>
+    <module>auth-service</module>
   </modules>
 
   <properties>
     <java.version>17</java.version>
-    <spring.boot.version>3.2.5</spring.boot.version> <!-- Updated -->
+    <spring.boot.version>3.2.5</spring.boot.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -51,6 +51,16 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version> <!-- latest stable -->
+        <configuration>
+          <release>${java.version}</release> <!-- ✅ Use release instead of source/target -->
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
