@@ -15,6 +15,7 @@
     <module>customer-service</module>
     <module>rentacar-commons</module>
     <module>auth-service</module>
+    <module>payment-service</module>
   </modules>
 
   <properties>
@@ -41,8 +42,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+    </dependencies>
 
-  <build>
+    <build>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -55,9 +62,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version> <!-- latest stable -->
+        <version>3.11.0</version>
         <configuration>
-          <release>${java.version}</release> <!-- ✅ Use release instead of source/target -->
+          <release>${java.version}</release>
         </configuration>
       </plugin>
     </plugins>
