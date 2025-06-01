@@ -1,4 +1,9 @@
+server:
+  port: 8085
+
 spring:
+  application:
+    name: payment-service
   datasource:
     url: jdbc:postgresql://localhost:5432/rentacardb
     username: your_user
@@ -7,3 +12,21 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+reservation:
+  service:
+    url: http://localhost:8082
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      reservation-service:
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
