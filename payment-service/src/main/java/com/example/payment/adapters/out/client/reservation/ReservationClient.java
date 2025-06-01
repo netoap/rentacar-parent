@@ -1,6 +1,7 @@
 package com.example.payment.adapters.out.client.reservation;
 
 
+import com.rentacar.commons.dto.ReservationStatusUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
