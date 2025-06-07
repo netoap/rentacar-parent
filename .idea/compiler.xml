@@ -8,11 +8,15 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="auth-service" />
+        <module name="payment-service" />
         <module name="vehicle-service" />
         <module name="customer-service" />
         <module name="rentacar-commons" />
         <module name="reservation-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="rentacar-commons (1)" target="16" />
+    </bytecodeTargetLevel>
   </component>
 </project>

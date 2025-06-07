@@ -12,28 +12,40 @@ public class PaymentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private Long customerId;
+
+    @Column(nullable = false)
     private Long reservationId;
 
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @Column(nullable = false)
+    private String method; // e.g., "CREDIT_CARD", "PAYPAL", "BANK_TRANSFER"
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;
 
-    @Column(nullable = false)
-    private String method; // e.g., "CREDIT_CARD", "PAYPAL", "BANK_TRANSFER"
-
     private LocalDateTime createdAt;
+
+
+//    @ManyToOne(optional = false)
+//    private Reservation reservation;
+
+//    @ManyToOne(optional = false)
+//    private CustomerEntity customer;
 
     public PaymentEntity() {}
 
-    public PaymentEntity(Long reservationId, BigDecimal amount, String method, PaymentStatus status) {
+    public PaymentEntity(Long customerId, Long reservationId, BigDecimal amount, String method, PaymentStatus status) {
+
+        this.customerId = customerId;
         this.reservationId = reservationId;
         this.amount = amount;
         this.method = method;
         this.status = status;
-        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() { return id; }
@@ -43,5 +55,20 @@ public class PaymentEntity {
     public PaymentStatus getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
     public void setStatus(PaymentStatus status) { this.status = status; }
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
 }

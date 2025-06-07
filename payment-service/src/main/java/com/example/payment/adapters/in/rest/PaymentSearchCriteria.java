@@ -21,6 +21,11 @@ public class PaymentSearchCriteria {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate createdAtTo;
 
+    private Long customerId;
+
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+
     public PaymentStatus getStatus() { return status; }
     public void setStatus(PaymentStatus status) { this.status = status; }
 

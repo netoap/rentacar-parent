@@ -31,18 +31,31 @@ public class ReservationController {
     @PostMapping
     @Operation(summary = "Create a new reservation")
     public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody CreateReservationRequest request) {
-        Reservation reservation = reservationUseCase.createReservation(request.getCustomerId(), request.getVehicleId());
+        //Long customerId, Long carId, LocalDate startDate, LocalDate endDate)
+        Reservation reservation = reservationUseCase.createReservation(
+                request.getCustomerId(),
+                request.getVehicleId(),
+                request.getStartDate(),
+                request.getEndDate()
+        );
+
         return new ResponseEntity<>(
-                new ReservationResponse(reservation.getId(), reservation.getCustomerId(),
-                        reservation.getCarId(), reservation.getReservationDate()),
-                HttpStatus.CREATED);
+                new ReservationResponse(
+                        reservation.getId(),
+                        reservation.getCustomerId(),
+                        reservation.getCarId(),
+                        reservation.getStartDate(),
+                        reservation.getEndDate()
+                ),
+                HttpStatus.CREATED
+        );
     }
+
 
     @GetMapping
     @Operation(summary = "Get all reservations")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
-        return ResponseEntity.ok(getReservationsQuery.getAllReservations().stream()
-                .map(r -> new ReservationResponse(r.getId(), r.getCustomerId(), r.getCarId(), r.getReservationDate()))
-                .toList());
+        return ResponseEntity.ok(getReservationsQuery.getAllReservations().stream().map(r ->
+                new ReservationResponse(r.getId(), r.getCustomerId(), r.getCarId(), r.getStartDate(), r.getEndDate())).toList());
     }
 }

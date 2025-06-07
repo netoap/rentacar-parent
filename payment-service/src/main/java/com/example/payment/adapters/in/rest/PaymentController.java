@@ -9,6 +9,7 @@ import com.rentacar.commons.dto.PaymentSummaryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -23,9 +24,10 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/payments")
-@Tag(name = "Payments", description = "Operations related to payments")
+@Tag(name = "Billing", description = "Endpoints related to customer payments and billing")
 public class PaymentController {
 
     private final CreatePaymentUseCase createPaymentUseCase;
@@ -67,7 +69,8 @@ public class PaymentController {
             @Parameter(name = "sort", description = "Sort format: field,direction (e.g., createdAt,desc)", example = "createdAt,desc")
     })
     @GetMapping
-    @Operation(summary = "List payments with filters, dates, sorting")
+    @Operation(summary = "List payments with filters, dates, sorting",
+            security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<PagedResponse<PaymentResponse>> findPayments(
             @ModelAttribute PaymentSearchCriteria criteria,
             @RequestParam(defaultValue = "0") int page,

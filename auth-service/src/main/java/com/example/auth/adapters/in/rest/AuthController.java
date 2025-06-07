@@ -41,7 +41,7 @@ public class AuthController {
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<UserProfileResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserEntity user = authService.register(request.username(), request.password(), request.roles());
+        UserEntity user = authService.register(request.email(), request.username(), request.password(), request.roles());
 
         URI location = URI.create("/users/" + user.getId());
 

@@ -1,17 +1,22 @@
 package com.example.vehicle.adapters.in.rest;
 
 import com.example.vehicle.adapters.in.rest.dto.CreateVehicleRequest;
+import com.example.vehicle.adapters.in.rest.dto.RentVehicleRequest;
 import com.example.vehicle.adapters.in.rest.dto.UpdateVehicleRequest;
 import com.example.vehicle.adapters.in.rest.dto.VehicleResponse;
 import com.example.vehicle.ports.in.*;
+import com.rentacar.commons.dto.VehicleAvailabilityResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -28,8 +33,10 @@ public class VehicleController {
     private final GetAvailableVehiclesQuery getAvailableVehiclesQuery;
     private final RentVehicleUseCase rentVehicleUseCase;
     private final ReturnVehicleUseCase returnVehicleUseCase;
+    private final GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase;
 
-    public VehicleController(AddVehicleUseCase addVehicleUseCase, GetVehicleByIdQuery getVehicleByIdQuery, GetAllVehiclesQuery getAllVehiclesQuery, UpdateVehicleUseCase updateVehicleUseCase, DeleteVehicleUseCase deleteVehicleUseCase, GetAvailableVehiclesQuery getAvailableVehiclesQuery, RentVehicleUseCase rentVehicleUseCase, ReturnVehicleUseCase returnVehicleUseCase) {
+
+    public VehicleController(AddVehicleUseCase addVehicleUseCase, GetVehicleByIdQuery getVehicleByIdQuery, GetAllVehiclesQuery getAllVehiclesQuery, UpdateVehicleUseCase updateVehicleUseCase, DeleteVehicleUseCase deleteVehicleUseCase, GetAvailableVehiclesQuery getAvailableVehiclesQuery, RentVehicleUseCase rentVehicleUseCase, ReturnVehicleUseCase returnVehicleUseCase, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase) {
         this.addVehicleUseCase = addVehicleUseCase;
         this.getVehicleByIdQuery = getVehicleByIdQuery;
         this.getAllVehiclesQuery = getAllVehiclesQuery;
@@ -38,6 +45,7 @@ public class VehicleController {
         this.getAvailableVehiclesQuery = getAvailableVehiclesQuery;
         this.rentVehicleUseCase = rentVehicleUseCase;
         this.returnVehicleUseCase = returnVehicleUseCase;
+        this.getVehicleAvailabilityUseCase = getVehicleAvailabilityUseCase;
     }
 
     @PostMapping
@@ -79,12 +87,16 @@ public class VehicleController {
 
     @Operation(summary = "Rent a vehicle")
     @PostMapping("/rent")
-    public ResponseEntity<Void> rentVehicle(
-            @RequestParam Long customerId,
-            @RequestParam Long vehicleId) {
-        rentVehicleUseCase.rentVehicle(customerId, vehicleId);
+    public ResponseEntity<Void> rentVehicle(@Valid @RequestBody RentVehicleRequest request) {
+        rentVehicleUseCase.rentVehicle(
+                request.getCustomerId(),
+                request.getVehicleId(),
+                request.getStartDate(),
+                request.getEndDate()
+        );
         return ResponseEntity.ok().build();
     }
+
 
     @Operation(summary = "Return a rented vehicle")
     @PostMapping("/return")
@@ -92,5 +104,17 @@ public class VehicleController {
         returnVehicleUseCase.returnVehicle(vehicleId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/vehicles/{vehicleId}/availability")
+    @Operation(summary = "Get booked dates for a vehicle")
+    public ResponseEntity<VehicleAvailabilityResponse> getAvailability(
+            @PathVariable Long vehicleId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+
+        VehicleAvailabilityResponse response = getVehicleAvailabilityUseCase.getVehicleAvailability(vehicleId, fromDate, toDate);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

@@ -37,13 +37,13 @@ public class AuthService implements AuthenticateUserUseCase {
         return Optional.of(user);
     }
 
-    public UserEntity register(String username, String password, List<String> roles) {
+    public UserEntity register(String email, String username, String password, List<String> roles) {
         if (loadUserPort.findByUsername(username).isPresent()) {
             throw new EmailAlreadyExistsException(username);
         }
 
         String encodedPassword = passwordEncoder.encode(password);
-        UserEntity newUser = new UserEntity(username, encodedPassword, roles);
+        UserEntity newUser = new UserEntity(email, username, encodedPassword, roles);
         return saveUserPort.save(newUser); // you'd need a SaveUserPort + adapter for this
     }
 }

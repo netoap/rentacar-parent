@@ -15,6 +15,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class VehicleRentalService implements RentVehicleUseCase, ReturnVehicleUseCase {
 
@@ -30,23 +32,8 @@ public class VehicleRentalService implements RentVehicleUseCase, ReturnVehicleUs
         this.createReservationPort = createReservationPort;
     }
 
-    @Override
-    @CircuitBreaker(name = "customerService", fallbackMethod = "fallbackLoadCustomer")
-    public void rentVehicle(Long customerId, Long vehicleId) {
-        CustomerResponse customer = loadCustomerPort.loadCustomer(customerId);
-        Vehicle vehicle = vehicleRepositoryPort.findById(vehicleId)
-                .orElseThrow(() -> new VehicleNotFoundException(vehicleId));
 
-        if (!vehicle.isAvailable()) {
-            throw new VehicleNotAvailableException(vehicleId);
-        }
 
-        vehicle.setAvailable(false);// Mark as rented
-        vehicleRepositoryPort.save(vehicle);
-        createReservationPort.createReservation(customerId, vehicleId);
-
-        eventPublisher.publishEvent(new VehicleRentedEvent(vehicleId, customerId));
-    }
 
     @Override
     public void returnVehicle(Long vehicleId) {
@@ -66,4 +53,25 @@ public class VehicleRentalService implements RentVehicleUseCase, ReturnVehicleUs
     public void fallbackLoadCustomer(Long customerId, Long vehicleId, Throwable t) {
         throw new RuntimeException("Customer Service is unavailable, please try again later.", t);
     }
+
+    @Override
+    @CircuitBreaker(name = "customerService", fallbackMethod = "fallbackLoadCustomerWithDates")
+    public void rentVehicle(Long customerId, Long vehicleId, LocalDate startDate, LocalDate endDate) {
+        CustomerResponse customer = loadCustomerPort.loadCustomer(customerId);
+        Vehicle vehicle = vehicleRepositoryPort.findById(vehicleId)
+                .orElseThrow(() -> new VehicleNotFoundException(vehicleId));
+
+        if (!vehicle.isAvailable()) {
+            throw new VehicleNotAvailableException(vehicleId);
+        }
+
+        vehicle.setAvailable(false);
+        vehicleRepositoryPort.save(vehicle);
+
+        createReservationPort.createReservation(customerId, vehicleId, startDate, endDate);
+
+        eventPublisher.publishEvent(new VehicleRentedEvent(vehicleId, customerId));
+    }
+
+
 }

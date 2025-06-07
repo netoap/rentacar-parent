@@ -2,32 +2,73 @@ package com.rentacar.commons.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-@Schema(description = "Response data for a reservation")
+@Schema(description = "Reservation response object")
 public class ReservationResponse {
 
-    @Schema(description = "Reservation ID", example = "1")
+    @Schema(description = "Reservation ID", example = "1001")
     private Long id;
 
     @Schema(description = "Customer ID", example = "101")
     private Long customerId;
 
-    @Schema(description = "Car ID", example = "202")
-    private Long carId;
+    @Schema(description = "Vehicle ID", example = "42")
+    private Long vehicleId;
 
-    @Schema(description = "Reservation timestamp", example = "2025-05-11T17:30:00")
-    private LocalDateTime reservationDate;
+    @Schema(description = "Reservation start date", example = "2025-06-10")
+    private LocalDate startDate;
 
-    public ReservationResponse(Long id, Long customerId, Long carId, LocalDateTime reservationDate) {
+    @Schema(description = "Reservation end date", example = "2025-06-15")
+    private LocalDate endDate;
+
+    public ReservationResponse() {}
+
+    public ReservationResponse(Long id, Long customerId, Long vehicleId, LocalDate startDate, LocalDate endDate) {
         this.id = id;
         this.customerId = customerId;
-        this.carId = carId;
-        this.reservationDate = reservationDate;
+        this.vehicleId = vehicleId;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    public Long getId() { return id; }
-    public Long getCustomerId() { return customerId; }
-    public Long getCarId() { return carId; }
-    public LocalDateTime getReservationDate() { return reservationDate; }
+    public Long getId() {
+        return id;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 }

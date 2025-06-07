@@ -18,6 +18,9 @@ public class CreatePaymentRequest {
     @NotBlank(message = "Payment method is required")
     private String method; // e.g., CREDIT_CARD, PAYPAL
 
+    @NotNull(message = "Customer ID is required")
+    private Long customerId;
+
     public Long getReservationId() { return reservationId; }
     public void setReservationId(Long reservationId) { this.reservationId = reservationId; }
 
@@ -26,4 +29,12 @@ public class CreatePaymentRequest {
 
     public String getMethod() { return method; }
     public void setMethod(String method) { this.method = method; }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 }
