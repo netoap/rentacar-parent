@@ -57,3 +57,10 @@ logs/
 *.log
 *.out
 *.err
+
+# ─── Angular Frontend ──────────────────────────────────────────────
+/rentacar-frontend/node_modules/
+/rentacar-frontend/dist/
+/rentacar-frontend/.angular/
+/rentacar-frontend/.env
+/rentacar-frontend/coverage/
