@@ -1,0 +1,18 @@
+<mat-card>
+  <mat-card-title>Welcome, {{ email }}</mat-card-title>
+  <mat-card-subtitle>Your role: {{ role }}</mat-card-subtitle>
+
+  <div *ngIf="role === 'ADMIN'" class="admin-section">
+    <h3>Admin Dashboard</h3>
+    <p>Access to user management, reservations, and vehicle control.</p>
+    <button mat-raised-button color="primary" routerLink="/vehicles">Manage Vehicles</button>
+    <button mat-raised-button color="accent" routerLink="/admin/reservations">View All Reservations</button>
+  </div>
+
+  <div *ngIf="role === 'CUSTOMER'" class="customer-section">
+    <h3>Customer Dashboard</h3>
+    <p>Welcome! You can view or create new reservations.</p>
+    <button mat-raised-button color="primary" routerLink="/vehicles">View Vehicles</button>
+    <button mat-raised-button color="accent" routerLink="/my-reservations">My Reservations</button>
+  </div>
+</mat-card>

@@ -1,0 +1,15 @@
+<h2>Available Vehicles</h2>
+
+<div class="vehicle-grid">
+  <mat-card *ngFor="let vehicle of vehicles">
+    <mat-card-title>{{ vehicle.model }}</mat-card-title>
+    <mat-card-content>
+      <p>Year: {{ vehicle.year }}</p>
+      <p>Status: 
+        <span [ngClass]="{ 'available': vehicle.available, 'unavailable': !vehicle.available }">
+          {{ vehicle.available ? 'Available' : 'Rented' }}
+        </span>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
