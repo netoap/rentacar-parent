@@ -1,44 +1,35 @@
-<mat-card>
-  <mat-card-title>Reserve Vehicle #{{ vehicleId }}</mat-card-title>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    
-    <mat-form-field 
-      appearance="fill" 
-      class="full-width"
-      [ngClass]="{ invalid: form.get('startDate')?.invalid && (form.get('startDate')?.touched || form.touched) }">
-        <mat-label>Start Date</mat-label>
-        <input matInput 
-                [matDatepicker]="startPicker" 
-                formControlName="startDate" 
-                [min]="minDate" 
-                [matDatepickerFilter]="dateFilter"
-                (dateChange)="handleDateChange($event)">
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
+<form [formGroup]="reservationForm" (ngSubmit)="submit()">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Localización de recogida</mat-label>
+    <input matInput formControlName="location" placeholder="Ciudad o aeropuerto" />
+  </mat-form-field>
+
+  <div class="date-row">
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de recogida</mat-label>
+      <input matInput [matDatepicker]="pickup" formControlName="startDate" [min]="today" />
+      <mat-datepicker-toggle matSuffix [for]="pickup"></mat-datepicker-toggle>
+      <mat-datepicker #pickup></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field 
-      appearance="fill" 
-      class="full-width"
-      [ngClass]="{ invalid: form.get('endDate')?.invalid && (form.get('endDate')?.touched || form.touched) }">
-        <mat-label>End Date</mat-label>
-        <input matInput 
-                [matDatepicker]="endPicker" 
-                formControlName="endDate" 
-                [min]="minDate" 
-                [matDatepickerFilter]="dateFilter"
-                (dateChange)="handleDateChange($event)">
-        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de devolución</mat-label>
+      <input matInput [matDatepicker]="return" formControlName="endDate" [min]="reservationForm.value.startDate" />
+      <mat-datepicker-toggle matSuffix [for]="return"></mat-datepicker-toggle>
+      <mat-datepicker #return></mat-datepicker>
     </mat-form-field>
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-      Reserve
-    </button>
-  </form>
-  <div *ngIf="form.errors?.['dateRangeInvalid'] && form.touched" class="error-msg">
-    End date must be on or after start date.
   </div>
-</mat-card>
 
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Vehículo</mat-label>
+    <mat-select formControlName="vehicleId">
+      <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">
+        {{ vehicle.model }} ({{ vehicle.year }})
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
+  <button mat-raised-button color="primary" type="submit" [disabled]="reservationForm.invalid">
+    Reservar
+  </button>
+</form>

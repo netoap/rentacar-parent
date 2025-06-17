@@ -15,10 +15,6 @@ export class AuthService {
   
   constructor(private http: HttpClient) { }
 
-  /*login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.API_URL, {email, password});
-  }*/
-
 
 login(email: string, password: string): Observable<{ token: string }> {
   // Simulate a successful login response with a fake JWT
@@ -61,4 +57,36 @@ login(email: string, password: string): Observable<{ token: string }> {
   getEmail(): string | null {
     return this.getUser()?.sub ?? null;
   }
+
+  // auth.service.ts
+  getCurrentUserRole(): 'ADMIN' | 'CUSTOMER' | 'EMPLOYEE' | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) return null;
+
+    // decode JWT and extract role
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role || null;
+  }
+
+  getUserProfile(): any | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const now = Math.floor(Date.now() / 1000); // current time in seconds
+
+      if (payload.exp && payload.exp < now) {
+        console.warn('Token expired');
+        this.logout(); // optional: clear token and redirect
+        return null;
+      }
+
+      return payload;
+    } catch (e) {
+      console.error('Invalid JWT:', e);
+      return null;
+    }
+  }
+
 }

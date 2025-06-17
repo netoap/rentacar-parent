@@ -1,23 +1,8 @@
-mat-card {
-  max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-}
-
 .full-width {
   width: 100%;
-  margin-bottom: 1rem;
-}
-.error-msg {
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
 }
 
-mat-form-field.invalid {
-  .mat-mdc-form-field-flex {
-    border: 1px solid red;
-    border-radius: 4px;
-  }
+.date-row {
+  display: flex;
+  gap: 1rem;
 }
-

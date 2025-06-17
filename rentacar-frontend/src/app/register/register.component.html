@@ -1,0 +1,27 @@
+<mat-card>
+  <mat-card-title>Crear cuenta</mat-card-title>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Contraseña</mat-label>
+      <input matInput formControlName="password" type="password" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Confirmar contraseña</mat-label>
+      <input matInput formControlName="confirmPassword" type="password" />
+    </mat-form-field>
+
+    <div *ngIf="form.errors?.['mismatch']" class="error-msg">
+      Las contraseñas no coinciden.
+    </div>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+      Registrarse
+    </button>
+  </form>
+</mat-card>

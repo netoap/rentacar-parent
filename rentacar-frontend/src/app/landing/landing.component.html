@@ -1,0 +1,35 @@
+<app-navbar></app-navbar>
+
+<div class="hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1>Alquiler de coches</h1>
+
+    <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Localización de recogida</mat-label>
+        <input matInput formControlName="location" placeholder="Ciudad o aeropuerto" />
+      </mat-form-field>
+
+      <div class="date-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de recogida</mat-label>
+          <input matInput [matDatepicker]="pickup" formControlName="startDate" [min]="today" />
+          <mat-datepicker-toggle matSuffix [for]="pickup"></mat-datepicker-toggle>
+          <mat-datepicker #pickup></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de devolución</mat-label>
+          <input matInput [matDatepicker]="return" formControlName="endDate" [min]="searchForm.value.startDate || today" />
+          <mat-datepicker-toggle matSuffix [for]="return"></mat-datepicker-toggle>
+          <mat-datepicker #return></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <button mat-raised-button color="accent" type="submit" [disabled]="searchForm.invalid">
+        Buscar
+      </button>
+    </form>
+  </div>
+</div>
