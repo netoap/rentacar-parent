@@ -2,6 +2,7 @@ package com.example.reservation.application;
 
 import com.example.reservation.adapters.out.jpa.entity.ReservationStatus;
 import com.example.reservation.domain.Reservation;
+import com.example.reservation.ports.in.CancelReservationUseCase;
 import com.example.reservation.ports.in.CreateReservationUseCase;
 import com.example.reservation.ports.in.GetReservationsQuery;
 import com.example.reservation.ports.in.GetVehicleAvailabilityUseCase;
@@ -14,7 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ReservationService implements CreateReservationUseCase, GetReservationsQuery, GetVehicleAvailabilityUseCase {
+public class ReservationService implements
+        CreateReservationUseCase,
+        GetReservationsQuery,
+        GetVehicleAvailabilityUseCase,
+        CancelReservationUseCase {
     private final ReservationRepositoryPort reservationRepository;
 
     public ReservationService(ReservationRepositoryPort reservationRepository) {
@@ -50,4 +55,15 @@ public class ReservationService implements CreateReservationUseCase, GetReservat
         List<LocalDate> sorted = booked.stream().sorted().collect(Collectors.toList());
         return new VehicleAvailabilityResponse(vehicleId, sorted);
     }
+
+    @Override
+    public void cancel(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId);
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new IllegalStateException("Reservation is already cancelled.");
+        }
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);
+    }
+
 }

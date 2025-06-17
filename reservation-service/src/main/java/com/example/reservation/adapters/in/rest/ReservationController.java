@@ -1,6 +1,7 @@
 package com.example.reservation.adapters.in.rest;
 
 import com.example.reservation.domain.Reservation;
+import com.example.reservation.ports.in.CancelReservationUseCase;
 import com.example.reservation.ports.in.CreateReservationUseCase;
 import com.example.reservation.ports.in.GetReservationsQuery;
 import com.rentacar.commons.dto.CreateReservationRequest;
@@ -22,16 +23,18 @@ import java.util.List;
 public class ReservationController {
     private final CreateReservationUseCase reservationUseCase;
     private final GetReservationsQuery getReservationsQuery;
+    private final CancelReservationUseCase cancelReservationUseCase;
 
-    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsQuery getReservationsQuery) {
+    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsQuery getReservationsQuery, CancelReservationUseCase cancelReservationUseCase) {
         this.reservationUseCase = reservationUseCase;
         this.getReservationsQuery = getReservationsQuery;
+        this.cancelReservationUseCase = cancelReservationUseCase;
     }
 
     @PostMapping
     @Operation(summary = "Create a new reservation")
     public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody CreateReservationRequest request) {
-        //Long customerId, Long carId, LocalDate startDate, LocalDate endDate)
+
         Reservation reservation = reservationUseCase.createReservation(
                 request.getCustomerId(),
                 request.getVehicleId(),
@@ -57,5 +60,11 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
         return ResponseEntity.ok(getReservationsQuery.getAllReservations().stream().map(r ->
                 new ReservationResponse(r.getId(), r.getCustomerId(), r.getCarId(), r.getStartDate(), r.getEndDate())).toList());
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
+        cancelReservationUseCase.cancel(id); // sets status to CANCELLED
+        return ResponseEntity.noContent().build();
     }
 }
