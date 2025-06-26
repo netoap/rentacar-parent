@@ -3,14 +3,18 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/authdb
-    username: your_user
-    password: your_password
+    url: jdbc:postgresql://localhost:5432/rentacar_auth
+    username: postgres
+    password: secret
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  sql:
+    init:
+      mode: always
+
 
 jwt:
-  secret: my-very-secure-and-long-secret-key-change-this
+  secret: "hjd7f$#3ajLz9XPp!3qVmUc@V7gXkPgZ23mZn8wQ9tPfLs#4Nk"
   expiration-ms: 86400000  # 24h

@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,7 +26,7 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String username, Set<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("roles", roles)
