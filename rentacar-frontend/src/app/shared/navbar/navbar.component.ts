@@ -20,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class NavbarComponent {
   private auth = inject(AuthService);
 
-  isLoggedIn$ = this.auth.auth$; // ✅ needed for async pipe to work
+  isLoggedIn$ = this.auth.auth$; //needed for async pipe to work
   role = this.auth.getRole();
   email = this.auth.getEmail();
 

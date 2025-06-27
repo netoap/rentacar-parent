@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router,} from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,8 +25,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 export class LandingComponent  {
   today = new Date();
   searchForm: FormGroup;
+  fb = inject(FormBuilder);
+  router = inject(Router);
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor() {
     this.searchForm = this.fb.group({
       location: ['', Validators.required],
       startDate: [this.today, Validators.required],

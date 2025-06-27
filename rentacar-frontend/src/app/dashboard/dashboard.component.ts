@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -16,7 +16,8 @@ export class DashboardComponent {
   email: string | null;
   role: string | null;
 
-  constructor(private auth: AuthService) {
+  auth = inject(AuthService);
+  constructor() {
     this.email = this.auth.getEmail();
     this.role = this.auth.getRole();
   }
