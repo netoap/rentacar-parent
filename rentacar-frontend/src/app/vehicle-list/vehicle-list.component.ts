@@ -1,24 +1,78 @@
-import { Component, OnInit  } from '@angular/core';
-import { VehicleService, Vehicle } from '../services/vehicle';
-import { MatCardModule } from '@angular/material/card';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-vehicle-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule],
   templateUrl: './vehicle-list.component.html',
-  styleUrl: './vehicle-list.component.scss'
+  styleUrls: ['./vehicle-list.component.scss'],
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule]
 })
 export class VehicleListComponent implements OnInit {
-  vehicles: Vehicle[] = [];
+  loading = true;
+  vehiclesByCategory = new Map<string, any[]>();
+  lastSearchParams: { location?: string; start: string; end: string } | null = null;
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.vehicleService.getAvailableVehicles().subscribe((data) => {
-      this.vehicles = data;
+    this.route.queryParams.subscribe(params => {
+      const { location, start, end } = params;
+
+      if (!location || !start || !end) {
+        this.loading = false;
+        console.warn('Missing required search parameters');
+        return;
+      }
+
+    this.lastSearchParams = { location, start, end };
+    this.fetchAvailableVehicles(location, start, end);
     });
   }
 
+  retry(): void {
+    if (this.lastSearchParams) {
+      this.loading = true;
+      this.vehiclesByCategory.clear();
+      this.fetchAvailableVehicles(
+        this.lastSearchParams.location!,
+        this.lastSearchParams.start,
+        this.lastSearchParams.end
+      );
+    }
+  }
+
+  private fetchAvailableVehicles(location: string, start: string, end: string): void {
+    const apiUrl =
+      `/api/v1/vehicles/available?from=${start}&to=${end}` +
+      (location ? `&location=${encodeURIComponent(location)}` : '');
+
+    this.http.get<any[]>(apiUrl).subscribe({
+      next: (data) => {
+        this.vehiclesByCategory = this.groupByCategory(data);
+        this.loading = false;
+      },
+      error: () => {
+        this.vehiclesByCategory.clear();
+        this.loading = false;
+      }
+    });
+  }
+
+  private groupByCategory(vehicles: any[]): Map<string, any[]> {
+    const grouped = new Map<string, any[]>();
+    for (const car of vehicles) {
+      const category = car.category || 'Otros';
+      if (!grouped.has(category)) {
+        grouped.set(category, []);
+      }
+      grouped.get(category)!.push(car);
+    }
+    return grouped;
+  }
 }

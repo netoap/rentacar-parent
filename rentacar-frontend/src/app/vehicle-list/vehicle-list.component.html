@@ -1,15 +1,28 @@
-<h2>Available Vehicles</h2>
+<ng-container *ngIf="loading">
+  <p>Cargando vehículos disponibles...</p>
+</ng-container>
 
-<div class="vehicle-grid">
-  <mat-card *ngFor="let vehicle of vehicles">
-    <mat-card-title>{{ vehicle.model }}</mat-card-title>
-    <mat-card-content>
-      <p>Year: {{ vehicle.year }}</p>
-      <p>Status: 
-        <span [ngClass]="{ 'available': vehicle.available, 'unavailable': !vehicle.available }">
-          {{ vehicle.available ? 'Available' : 'Rented' }}
-        </span>
-      </p>
-    </mat-card-content>
-  </mat-card>
-</div>
+<ng-container *ngIf="!loading && vehiclesByCategory.size === 0">
+  <p><strong>No hay vehículos disponibles en las fechas seleccionadas.</strong></p>
+  <button mat-stroked-button color="primary" (click)="retry()">Reintentar búsqueda</button>
+</ng-container>
+
+<ng-container *ngIf="!loading && vehiclesByCategory.size > 0">
+  <div *ngFor="let category of vehiclesByCategory.keys()">
+    <h2>{{ category }}</h2>
+    <div class="vehicle-grid">
+      <mat-card *ngFor="let car of vehiclesByCategory.get(category)" class="vehicle-card">
+        <mat-card-title>{{ car.model }}</mat-card-title>
+        <mat-card-content>
+          <p>Año: {{ car.year }}</p>
+          <p>Precio por día: {{ car.price | currency }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" [routerLink]="['/reserve', car.id]">
+            Reservar
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</ng-container>

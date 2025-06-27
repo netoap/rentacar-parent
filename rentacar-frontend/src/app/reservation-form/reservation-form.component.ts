@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -12,37 +12,50 @@ import { HttpClient } from '@angular/common/http';
   selector: 'app-reservation-form',
   standalone: true,
   templateUrl: './reservation-form.component.html',
+  styleUrls: ['./reservation-form.component.scss'],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatSelectModule
-  ]
+  CommonModule,        
+  ReactiveFormsModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatDatepickerModule,
+  MatButtonModule,
+  MatSelectModule
+]
+
 })
-export class ReservationFormComponent {
+export class ReservationFormComponent implements OnInit {
   fb = inject(FormBuilder);
   http = inject(HttpClient);
 
   today = new Date();
   vehicles: any[] = [];
 
-  reservationForm: FormGroup = this.fb.group({
-    location: '',
-    startDate: '',
-    endDate: '',
-    vehicleId: ''
-  });
+  // ✅ Declare the form at class level
+  reservationForm!: FormGroup;
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // ✅ Initialize it inside ngOnInit
+    this.reservationForm = this.fb.group({
+      location: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      vehicleId: ['', Validators.required]
+    });
+
     this.http.get<any[]>('/api/vehicles/available').subscribe(data => {
       this.vehicles = data;
     });
   }
 
-  submit() {
+  submit(): void {
+    const { startDate, endDate } = this.reservationForm.value;
+
+    if (new Date(endDate) <= new Date(startDate)) {
+      alert('End date must be after start date');
+      return;
+    }
+
     if (this.reservationForm.valid) {
       this.http.post('/api/reservations', this.reservationForm.value).subscribe(() => {
         alert('Reserva realizada con éxito');

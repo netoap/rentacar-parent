@@ -9,7 +9,7 @@
     <button mat-raised-button color="accent" routerLink="/admin/reservations">View All Reservations</button>
   </div>
 
-  <div *ngIf="role === 'CUSTOMER'" class="customer-section">
+  <div *ngIf="role === 'USER'" class="customer-section">
     <h3>Customer Dashboard</h3>
     <p>Welcome! You can view or create new reservations.</p>
     <button mat-raised-button color="primary" routerLink="/vehicles">View Vehicles</button>

@@ -1,69 +1,79 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatSort } from '@angular/material/sort';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog } from '@angular/material/dialog';
-import { ReservationDetailsDialogComponent } from '../reservation/reservation-details-dialog.component';
-
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-reservation-list',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatChipsModule
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatPaginatorModule
   ],
   templateUrl: './reservation-list.component.html',
+  styleUrls: ['./reservation-list.component.scss']
 })
-export class ReservationListComponent {
-  http = inject(HttpClient);
-  dialog = inject(MatDialog);
-  dataSource = new MatTableDataSource<any>();
-  columns: string[] = ['id', 'location', 'dates', 'vehicle', 'status', 'actions'];
-  total = 0;
-  pageSize = 10;
+export class ReservationListComponent implements OnInit {
+  private http = inject(HttpClient);
 
-  ngOnInit() {
-    this.loadPage({
-      pageIndex: 0, pageSize: this.pageSize,
-      length: 0
+  reservations: Reservation[] = [];
+  filteredReservations: Reservation[] = [];
+
+  statusFilter = new FormControl('');
+  searchTerm = new FormControl('');
+
+  pageSize = 5;
+  pageIndex = 0;
+
+  ngOnInit(): void {
+    this.loadReservations();
+
+    this.statusFilter.valueChanges.subscribe(() => this.applyFilters());
+    this.searchTerm.valueChanges.subscribe(() => this.applyFilters());
+  }
+
+  loadReservations(): void {
+    this.http.get<Reservation[]>('/api/reservations/my').subscribe(data => {
+      this.reservations = data;
+      this.applyFilters();
     });
   }
 
-  loadPage(event: PageEvent) {
-    const params = {
-      page: event.pageIndex.toString(),
-      size: event.pageSize.toString()
-    };
+  applyFilters(): void {
+    const status = this.statusFilter.value;
+    const search = this.searchTerm.value?.toLowerCase() ?? '';
 
-    this.http.get<any>('/api/reservations', { params }).subscribe(response => {
-      this.dataSource.data = response.content;
-      this.total = response.totalElements;
-    });
+    this.filteredReservations = this.reservations.filter(r =>
+      (!status || r.status === status) &&
+      (r.vehicleModel.toLowerCase().includes(search) ||
+       r.id.includes(search))
+    );
   }
 
-  viewDetails(reservation: any) {
-    this.dialog.open(ReservationDetailsDialogComponent, {
-      data: reservation,
-      width: '400px'
-    });
+  onPage(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
   }
 
-  cancelReservation(reservation: any) {
-    if (!confirm('¿Estás seguro de que deseas cancelar esta reserva?')) return;
-
-    this.http.patch(`/api/reservations/${reservation.id}/cancel`, {}).subscribe(() => {
-      reservation.status = 'CANCELLED';
-      alert('Reserva cancelada.');
-    });
+  get paginatedReservations(): Reservation[] {
+    const start = this.pageIndex * this.pageSize;
+    return this.filteredReservations.slice(start, start + this.pageSize);
   }
+}
+interface Reservation {
+  id: string;
+  vehicleModel: string;
+  startDate: string;
+  endDate: string;
+  status: 'UPCOMING' | 'COMPLETED' | 'CANCELLED';
 }

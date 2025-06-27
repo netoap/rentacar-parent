@@ -1,15 +1,16 @@
 .vehicle-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.available {
-  color: green;
-  font-weight: bold;
+.vehicle-card {
+  padding: 1rem;
 }
 
-.unavailable {
-  color: red;
-  font-weight: bold;
+h2 {
+  margin: 2rem 0 1rem;
+  font-weight: 600;
+  color: #444;
 }

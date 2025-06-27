@@ -1,54 +1,54 @@
-<mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+<div class="filters">
+  <mat-form-field appearance="fill">
+    <mat-label>Status</mat-label>
+    <mat-select [formControl]="statusFilter">
+      <mat-option value="">All</mat-option>
+      <mat-option value="UPCOMING">Upcoming</mat-option>
+      <mat-option value="COMPLETED">Completed</mat-option>
+      <mat-option value="CANCELLED">Cancelled</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-  <!-- ID Column -->
+  <mat-form-field appearance="fill">
+    <mat-label>Search</mat-label>
+    <input matInput [formControl]="searchTerm" placeholder="ID or vehicle">
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="paginatedReservations" class="mat-elevation-z8">
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
-    <mat-cell *matCellDef="let r">{{ r.id }}</mat-cell>
+    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <td mat-cell *matCellDef="let r"> {{ r.id }} </td>
   </ng-container>
 
-  <!-- Location Column -->
-  <ng-container matColumnDef="location">
-    <mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</mat-header-cell>
-    <mat-cell *matCellDef="let r">{{ r.location }}</mat-cell>
-  </ng-container>
-
-  <!-- Dates Column -->
-  <ng-container matColumnDef="dates">
-    <mat-header-cell *matHeaderCellDef>Fechas</mat-header-cell>
-    <mat-cell *matCellDef="let r">
-      {{ r.startDate | date }} - {{ r.endDate | date }}
-    </mat-cell>
-  </ng-container>
-
-  <!-- Vehicle Column -->
   <ng-container matColumnDef="vehicle">
-    <mat-header-cell *matHeaderCellDef>Vehículo</mat-header-cell>
-    <mat-cell *matCellDef="let r">
-      {{ r.vehicle.model }} ({{ r.vehicle.year }})
-    </mat-cell>
+    <th mat-header-cell *matHeaderCellDef> Vehicle </th>
+    <td mat-cell *matCellDef="let r"> {{ r.vehicleModel }} </td>
   </ng-container>
 
-  <!-- Status Column -->
+  <ng-container matColumnDef="start">
+    <th mat-header-cell *matHeaderCellDef> Start </th>
+    <td mat-cell *matCellDef="let r"> {{ r.startDate | date }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="end">
+    <th mat-header-cell *matHeaderCellDef> End </th>
+    <td mat-cell *matCellDef="let r"> {{ r.endDate | date }} </td>
+  </ng-container>
+
   <ng-container matColumnDef="status">
-    <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-    <mat-cell *matCellDef="let r">
-      <mat-chip color="accent" selected>{{ r.status }}</mat-chip>
-    </mat-cell>
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let r"> {{ r.status }} </td>
   </ng-container>
-  <!-- Actions Column -->
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
-    <mat-cell *matCellDef="let r">
-      <button mat-button color="primary" (click)="viewDetails(r)">Ver detalles</button>
-      <button mat-button color="warn" (click)="cancelReservation(r)" [disabled]="r.status === 'CANCELLED'">
-        Cancelar
-      </button>
-    </mat-cell>
-  </ng-container>
-  <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: columns;"></mat-row>
-</mat-table>
 
-<mat-paginator [length]="total" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"
-               (page)="loadPage($event)">
+  <tr mat-header-row *matHeaderRowDef="['id', 'vehicle', 'start', 'end', 'status']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['id', 'vehicle', 'start', 'end', 'status']"></tr>
+</table>
+
+<mat-paginator
+  [length]="filteredReservations.length"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPage($event)">
 </mat-paginator>
