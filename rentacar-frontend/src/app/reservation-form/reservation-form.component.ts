@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Vehicle } from '../services/vehicle';
 
 @Component({
   selector: 'app-reservation-form',
@@ -29,13 +30,13 @@ export class ReservationFormComponent implements OnInit {
   http = inject(HttpClient);
 
   today = new Date();
-  vehicles: any[] = [];
+  vehicles: Vehicle[] = [];
 
-  // ✅ Declare the form at class level
+  // Declare the form at class level
   reservationForm!: FormGroup;
 
   ngOnInit(): void {
-    // ✅ Initialize it inside ngOnInit
+    // Initialize it inside ngOnInit
     this.reservationForm = this.fb.group({
       location: ['', Validators.required],
       startDate: ['', Validators.required],
@@ -43,7 +44,7 @@ export class ReservationFormComponent implements OnInit {
       vehicleId: ['', Validators.required]
     });
 
-    this.http.get<any[]>('/api/vehicles/available').subscribe(data => {
+    this.http.get<Vehicle[]>('/api/vehicles/available').subscribe(data => {
       this.vehicles = data;
     });
   }

@@ -9,7 +9,6 @@ export class GuestGuard implements CanActivate {
 
   auth=inject(AuthService);
   router = inject(Router);
-  constructor() {}
 
   canActivate(): boolean {
     if (this.auth.isAuthenticated()) {

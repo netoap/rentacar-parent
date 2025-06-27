@@ -10,6 +10,7 @@ import { catchError, retry, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export const authInterceptor: HttpInterceptorFn = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   req: HttpRequest<any>,
   next: HttpHandlerFn
 ) => {

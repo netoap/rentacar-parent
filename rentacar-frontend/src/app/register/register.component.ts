@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -30,14 +30,14 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class RegisterComponent {
+  private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   form: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) {
+  constructor() {
     this.form = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],

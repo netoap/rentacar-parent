@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -14,11 +15,12 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule]
 })
 export class VehicleListComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
+
   loading = true;
   vehiclesByCategory = new Map<string, any[]>();
   lastSearchParams: { location?: string; start: string; end: string } | null = null;
-
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

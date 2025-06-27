@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 
@@ -20,6 +20,6 @@ import { CommonModule } from '@angular/common';
     </mat-dialog-actions>
   `
 })
-export class ReservationDetailsDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+export class ReservationDetailsDialogComponent {  data = inject(MAT_DIALOG_DATA);
+
 }

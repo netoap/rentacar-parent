@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -5,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../auth/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-reservation-summary',
@@ -48,8 +50,9 @@ export class ReservationSummaryComponent implements OnInit {
         this.calculateTotal();
         this.loading = false;
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.router.navigate(['/vehicles']);
+        console.error('Error fetching vehicle:', err);
       },
     });
   }
