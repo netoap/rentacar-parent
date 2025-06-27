@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { JwtPayload, decodeToken } from './jwt-utils';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { decodeToken } from './jwt-utils';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -14,8 +13,10 @@ export class AuthService {
 
   private authState = new BehaviorSubject<boolean>(this.checkToken());
   auth$ = this.authState.asObservable();
+  http = inject(HttpClient);
+  router = inject(Router);
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor() {
     // Optional: poll every 15s to detect expiration
     setInterval(() => {
       if (!this.checkToken()) {

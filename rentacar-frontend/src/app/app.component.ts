@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,8 +13,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { NavbarComponent } from './shared/navbar/navbar.component'; // adjust path as needed
-
-
 
 @Component({
   selector: 'app-root',
@@ -26,24 +29,32 @@ import { NavbarComponent } from './shared/navbar/navbar.component'; // adjust pa
     MatNativeDateModule,
     MatButtonModule,
     NavbarComponent,
-  ]
+  ],
 })
 export class AppComponent {
   today = new Date();
   searchForm: FormGroup;
+  fb = inject(FormBuilder);
+  router = inject(Router);
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    this.searchForm = this.fb.group({
-      location: ['', Validators.required],
-      startDate: [this.today, Validators.required],
-      endDate: [new Date(this.today.getTime() + 3 * 864e5), Validators.required],
-    }, {
-      validators: (c) => {
-        const s = c.get('startDate')!.value;
-        const e = c.get('endDate')!.value;
-        return e >= s ? null : { dateRange: true };
+  constructor() {
+    this.searchForm = this.fb.group(
+      {
+        location: ['', Validators.required],
+        startDate: [this.today, Validators.required],
+        endDate: [
+          new Date(this.today.getTime() + 3 * 864e5),
+          Validators.required,
+        ],
+      },
+      {
+        validators: (c) => {
+          const s = c.get('startDate')!.value;
+          const e = c.get('endDate')!.value;
+          return e >= s ? null : { dateRange: true };
+        },
       }
-    });
+    );
   }
 
   search() {
@@ -56,8 +67,8 @@ export class AppComponent {
       queryParams: {
         location,
         start: startDate.toISOString().split('T')[0],
-        end: endDate.toISOString().split('T')[0]
-      }
+        end: endDate.toISOString().split('T')[0],
+      },
     });
   }
 }
