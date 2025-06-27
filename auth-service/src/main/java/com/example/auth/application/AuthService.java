@@ -7,6 +7,7 @@ import com.example.auth.domain.exception.UsernameAlreadyExistsException;
 import com.example.auth.ports.in.AuthenticateUserUseCase;
 import com.example.auth.ports.out.LoadUserPort;
 import com.example.auth.ports.out.SaveUserPort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,20 +33,27 @@ public class AuthService implements AuthenticateUserUseCase {
         UserEntity user = loadUserPort.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             return Optional.empty();  // Wrong password = 401 handled in controller
         }
-
         return Optional.of(user);
     }
+
 
     public UserEntity register(String email, String username, String password, Set<String> roles) {
         if (loadUserPort.findByUsername(username).isPresent()) {
             throw new UsernameAlreadyExistsException(username);
         }
-
-        String encodedPassword = passwordEncoder.encode(password);
-        UserEntity newUser = new UserEntity(email, username, encodedPassword, roles);
+        if (loadUserPort.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException("Email already registered");
+        }
+        //String encodedPassword = passwordEncoder.encode(password);
+        UserEntity newUser = new UserEntity(email, username, password, roles);
         return saveUserPort.save(newUser); // you'd need a SaveUserPort + adapter for this
+    }
+
+    public UserEntity findByUsername(String username) {
+        return loadUserPort.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }

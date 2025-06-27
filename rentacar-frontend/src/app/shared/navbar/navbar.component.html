@@ -1,0 +1,17 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="brand" routerLink="/">🚗 Rentacar</span>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="isLoggedIn$ | async; else guestLinks">
+    <button mat-button routerLink="/dashboard">Dashboard</button>
+    <button mat-button routerLink="/my-reservations">My Reservations</button>
+    <button mat-button *ngIf="role === 'ADMIN'" routerLink="/admin">Admin</button>
+    <button mat-stroked-button (click)="logout()">Logout<span *ngIf="email"> ({{ email }})</span></button>
+  </ng-container>
+
+  <ng-template #guestLinks>
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-flat-button color="accent" routerLink="/register">Register</button>
+  </ng-template>
+</mat-toolbar>

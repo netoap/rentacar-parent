@@ -1,43 +1,68 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { LoginComponent } from './login/login.component';
 import { authGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
-
-import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
-import { ReservationFormComponent } from './reservation-form/reservation-form.component';
-import { ReservationListComponent } from './reservation-list/reservation-list.component';
-import { LandingComponent } from './landing/landing.component';
-import { RegisterComponent } from './register/register.component';
-
-
-
-
-
-
+import { roleGuard } from './auth/role.guard';
 
 export const routes: Routes = [
-  // Default: Show landing page
-  { path: '', component: LandingComponent },
+  // Public
+  {
+    path: '',
+    loadComponent: () => import('./landing/landing.component').then(m => m.LandingComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent),
+    canActivate: [GuestGuard]
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./register/register.component').then(m => m.RegisterComponent),
+    canActivate: [GuestGuard]
+  },
 
-  // Login page (only if not authenticated)
-  { path: 'login', component: LoginComponent, canActivate: [GuestGuard] },
-  { path: 'register', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'register', component: RegisterComponent, canActivate: [GuestGuard] },
-
-  // Authenticated routes
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-  { path: 'admin', component: DashboardComponent, canActivate: [authGuard] },
-  { path: 'vehicles', component: VehicleListComponent, canActivate: [authGuard] },
-  { path: 'reserve/:vehicleId', component: ReservationFormComponent, canActivate: [authGuard] },
-  { path: 'my-reservations', component: ReservationListComponent, canActivate: [authGuard] },
-
-  // Fallback route
-  { path: '**', redirectTo: '' },
+  // Protected routes
   {
     path: 'dashboard',
-    loadComponent: () => import('./dashboard/dashboard-view.component').then(m => m.DashboardViewComponent)
-  }
+    loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'vehicles',
+    loadComponent: () => import('./vehicle-list/vehicle-list.component').then(m => m.VehicleListComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'reserve/:vehicleId',
+    loadComponent: () => import('./reservation-form/reservation-form.component').then(m => m.ReservationFormComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'my-reservations',
+    loadComponent: () => import('./reservation-list/reservation-list.component').then(m => m.ReservationListComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'reservation-summary',
+    loadComponent: () => import('./reservation/reservation-summary/reservation-summary.component').then(m => m.ReservationSummaryComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'vehicles/:vehicleId/calendar',
+    loadComponent: () => import('./vehicle/vehicle-calendar/vehicle-calendar.component').then(m => m.VehicleCalendarComponent),
+    canActivate: [authGuard]
+  },
+  {
+  path: 'admin',
+  loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+  canActivate: [authGuard, roleGuard],
+  data: { expectedRole: 'ADMIN' }
+},
 
+  // Fallback
+  { path: '**', redirectTo: '' }
 ];
-

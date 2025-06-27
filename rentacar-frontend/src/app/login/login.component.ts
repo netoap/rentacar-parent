@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -12,20 +17,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { decodeToken, JwtPayload } from '../auth/jwt-utils';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
-  ]
+    MatButtonModule,
+  ],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -37,32 +41,36 @@ export class LoginComponent {
     private snackBar: MatSnackBar
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required]],
     });
   }
+
   onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    const { email, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
-        next: (res: LoginResponse) => {
-          localStorage.setItem('token', res.token);
+    this.authService.login(username, password).subscribe({
+      next: (res: LoginResponse) => {
+        localStorage.setItem('token', res.token);
 
-          const payload: JwtPayload | null = decodeToken(res.token);
-          const role = payload?.role ?? 'CUSTOMER';
+        const payload: JwtPayload | null = decodeToken(res.token);
+        const role = payload?.role ?? 'CUSTOMER';
 
-          if(role === 'ADMIN'){
-            this.router.navigate(['/admin']);
-          } else {
-            this.router.navigate(['/dashboard']);
-          }
-          this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
-        },
+        if (role === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+
+        this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+      },
       error: () => {
-        this.snackBar.open('Invalid email or password', 'Close', { duration: 3000 });
-      }
+        this.snackBar.open('Invalid username or password', 'Close', {
+          duration: 3000,
+        });
+      },
     });
   }
 }

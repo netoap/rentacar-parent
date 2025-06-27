@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router,} from '@angular/router';
-import { NavbarComponent } from '../layout/navbar/navbar.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +11,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 @Component({
   selector: 'app-landing',
   imports: [
-    NavbarComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

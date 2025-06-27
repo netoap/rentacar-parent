@@ -1,92 +1,85 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { LoginResponse } from '../login/login-response';
-import { decodeToken, JwtPayload } from './jwt-utils';
-import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { delay } from 'rxjs/operators';
-
+import { JwtPayload, decodeToken } from './jwt-utils';
+import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = '/api/auth/login';
-  
-  constructor(private http: HttpClient) { }
+  //private readonly API_URL = `${environment.apiBaseUrl}/auth/login`;
 
+  private authState = new BehaviorSubject<boolean>(this.checkToken());
+  auth$ = this.authState.asObservable();
 
-login(email: string, password: string): Observable<{ token: string }> {
-  // Simulate a successful login response with a fake JWT
-  const fakeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiZXhwIjoxODAwMDAwMDAwfQ.dummy';
-  return of({ token: fakeToken }).pipe(delay(500)); // simulate network delay
-}
+  constructor(private http: HttpClient, private router: Router) {
+    // Optional: poll every 15s to detect expiration
+    setInterval(() => {
+      if (!this.checkToken()) {
+        this.logout();
+      }
+    }, 50000);
+  }
 
+  login(username: string, password: string): Observable<{ token: string }> {
+    return this.http
+      .post<{ token: string }>('http://localhost:8080/api/auth/login', {
+        username,
+        password,
+      })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('token', response.token);
+          this.authState.next(true);
+        })
+      );
+  }
 
   logout(): void {
     localStorage.removeItem('token');
+    this.authState.next(false);
+    this.router.navigate(['/login']); // sin recargar la app
   }
 
   isAuthenticated(): boolean {
+    return this.authState.value;
+  }
+
+  private checkToken(): boolean {
     const token = localStorage.getItem('token');
     if (!token) return false;
 
     const payload = decodeToken(token);
-    if (!payload || !payload.exp) return false;
-
-    const now = Math.floor(Date.now() / 1000); // in seconds
-    const isExpired = payload.exp < now;
-
-    if (isExpired) {
-      this.logout(); // auto-logout
-      return false;
-    }
-
-    return true;
+    const now = Math.floor(Date.now() / 1000);
+    return !!payload?.exp && payload.exp > now;
   }
 
-  getUser(): JwtPayload | null {
+  getCurrentUser(): { email: string; role: string } | null {
     const token = localStorage.getItem('token');
-    return token ? decodeToken(token) : null;
+    const payload = token ? decodeToken(token) : null;
+
+    if (!payload) return null;
+
+    const rawRole = Array.isArray(payload.roles)
+      ? payload.roles[0]
+      : payload.role || 'USER';
+
+    const role = rawRole.replace('ROLE_', '');
+
+    return {
+      email: payload.sub,
+      role,
+    };
   }
 
   getRole(): string | null {
-    return this.getUser()?.role ?? null;
+    return this.getCurrentUser()?.role ?? null;
   }
 
   getEmail(): string | null {
-    return this.getUser()?.sub ?? null;
+    return this.getCurrentUser()?.email ?? null;
   }
-
-  // auth.service.ts
-  getCurrentUserRole(): 'ADMIN' | 'CUSTOMER' | 'EMPLOYEE' | null {
-    const token = localStorage.getItem('access_token');
-    if (!token) return null;
-
-    // decode JWT and extract role
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.role || null;
-  }
-
-  getUserProfile(): any | null {
-    const token = localStorage.getItem('access_token');
-    if (!token) return null;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const now = Math.floor(Date.now() / 1000); // current time in seconds
-
-      if (payload.exp && payload.exp < now) {
-        console.warn('Token expired');
-        this.logout(); // optional: clear token and redirect
-        return null;
-      }
-
-      return payload;
-    } catch (e) {
-      console.error('Invalid JWT:', e);
-      return null;
-    }
-  }
-
 }

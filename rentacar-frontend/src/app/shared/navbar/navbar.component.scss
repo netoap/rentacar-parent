@@ -1,0 +1,25 @@
+.navbar {
+  padding: 0 1.5rem;
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff !important;
+  color: #333;
+
+  .brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #1976d2;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  button {
+    margin-left: 0.5rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

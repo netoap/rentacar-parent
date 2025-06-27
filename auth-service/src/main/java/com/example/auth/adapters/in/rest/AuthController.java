@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticateUserUseCase authenticateUserUseCase;
@@ -57,8 +57,16 @@ public class AuthController {
 
     @Operation(summary = "Get current authenticated user", security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/me")
-    public ResponseEntity<?> me(Authentication authentication) {
+    public ResponseEntity<UserProfileResponse> me(Authentication authentication) {
         String username = authentication.getName();
-        return ResponseEntity.ok(Map.of("username", username));
+        UserEntity user = authService.findByUsername(username);
+
+        return ResponseEntity.ok(new UserProfileResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getRoles(),
+                user.getCreatedAt(),
+                user.isActive()
+        ));
     }
 }

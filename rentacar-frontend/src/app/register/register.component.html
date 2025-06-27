@@ -1,27 +1,67 @@
-<mat-card>
-  <mat-card-title>Crear cuenta</mat-card-title>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" type="email" />
-    </mat-form-field>
+<div class="register-wrapper">
+  <mat-card class="register-card">
+    <h2>Crear cuenta</h2>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Contraseña</mat-label>
-      <input matInput formControlName="password" type="password" />
-    </mat-form-field>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" required />
+        <mat-error *ngIf="form.get('email')?.hasError('required')">
+          El email es obligatorio
+        </mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email')">
+          El email no es válido
+        </mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('taken')">
+          El email ya está en uso
+        </mat-error>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Confirmar contraseña</mat-label>
-      <input matInput formControlName="confirmPassword" type="password" />
-    </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nombre de usuario*</mat-label>
+        <input matInput formControlName="username" required />
+        <mat-error *ngIf="form.get('username')?.hasError('required')">
+          El nombre de usuario es obligatorio
+        </mat-error>
+        <mat-error *ngIf="form.get('username')?.hasError('taken')">
+          El nombre de usuario ya está en uso
+        </mat-error>
+      </mat-form-field>
 
-    <div *ngIf="form.errors?.['mismatch']" class="error-msg">
-      Las contraseñas no coinciden.
-    </div>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <input matInput formControlName="password" type="password" required />
+        <mat-error *ngIf="form.get('password')?.hasError('required')">
+          La contraseña es obligatoria
+        </mat-error>
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-      Registrarse
-    </button>
-  </form>
-</mat-card>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Confirmar contraseña</mat-label>
+        <input
+          matInput
+          formControlName="confirmPassword"
+          type="password"
+          required
+        />
+        <mat-error
+          *ngIf="
+            form.hasError('mismatch') && form.get('confirmPassword')?.touched
+          "
+        >
+          Las contraseñas no coinciden
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Registrarse
+      </button>
+    </form>
+  </mat-card>
+</div>

@@ -21,7 +21,7 @@ public class DataInitializer {
                         UserEntity admin = new UserEntity(
                                 "admin@rentacar.com",
                                 "admin",
-                                passwordEncoder.encode("admin123"),
+                                "admin123",
                                 Set.of("ROLE_ADMIN")
                         );
                         userRepository.save(admin);
