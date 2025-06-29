@@ -11,11 +11,13 @@
         <module name="payment-service" />
         <module name="vehicle-service" />
         <module name="customer-service" />
-        <module name="rentacar-commons" />
         <module name="reservation-service" />
+        <module name="api-gateway" />
+        <module name="rentacar-commons" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="api-gateway (1)" target="17" />
       <module name="rentacar-commons (1)" target="16" />
     </bytecodeTargetLevel>
   </component>

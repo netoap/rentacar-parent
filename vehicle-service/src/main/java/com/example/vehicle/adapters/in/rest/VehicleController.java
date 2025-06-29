@@ -89,7 +89,7 @@ public class VehicleController {
     @PostMapping("/rent")
     public ResponseEntity<Void> rentVehicle(@Valid @RequestBody RentVehicleRequest request) {
         rentVehicleUseCase.rentVehicle(
-                request.getCustomerId(),
+                request.getCustomerEmail(),
                 request.getVehicleId(),
                 request.getStartDate(),
                 request.getEndDate()

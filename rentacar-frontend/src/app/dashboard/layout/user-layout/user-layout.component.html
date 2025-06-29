@@ -1,0 +1,31 @@
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="custom-sidenav">
+    <mat-nav-list>
+      <!--<h3 class="sidebar-title">Usuario</h3>-->
+
+      <a mat-list-item routerLink="/dashboard/customer" routerLinkActive="active-link">
+        <mat-icon class="item-icon">home</mat-icon>
+        <span class="item-label">Inicio</span>
+      </a>
+      <a mat-list-item routerLink="/dashboard/vehicles" routerLinkActive="active-link">
+        <mat-icon class="item-icon">directions_car</mat-icon>
+        <span class="item-label">Vehículos</span>
+      </a>
+      <a mat-list-item routerLink="/dashboard/my-reservations" routerLinkActive="active-link">
+        <mat-icon class="item-icon">event</mat-icon>
+        <span class="item-label">Mis reservas</span>
+      </a>
+      <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+      <a mat-list-item (click)="logout()">
+        <mat-icon class="item-icon">logout</mat-icon>
+        <span class="item-label">Cerrar sesión</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

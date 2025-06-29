@@ -1,0 +1,17 @@
+<mat-card>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Modelo</mat-label>
+      <input matInput formControlName="model" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Año</mat-label>
+      <input matInput type="number" formControlName="year" required>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="available">Disponible</mat-checkbox>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Crear vehículo</button>
+  </form>
+</mat-card>

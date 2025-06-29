@@ -10,8 +10,8 @@ public class ReservationResponse {
     @Schema(description = "Reservation ID", example = "1001")
     private Long id;
 
-    @Schema(description = "Customer ID", example = "101")
-    private Long customerId;
+    @Schema(description = "Customer Email", example = "alex@email.com")
+    private String customerEmail;
 
     @Schema(description = "Vehicle ID", example = "42")
     private Long vehicleId;
@@ -24,9 +24,9 @@ public class ReservationResponse {
 
     public ReservationResponse() {}
 
-    public ReservationResponse(Long id, Long customerId, Long vehicleId, LocalDate startDate, LocalDate endDate) {
+    public ReservationResponse(Long id, String customerEmail, Long vehicleId, LocalDate startDate, LocalDate endDate) {
         this.id = id;
-        this.customerId = customerId;
+        this.customerEmail = customerEmail;
         this.vehicleId = vehicleId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -36,8 +36,8 @@ public class ReservationResponse {
         return id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getCustomerEmail() {
+        return customerEmail;
     }
 
     public Long getVehicleId() {
@@ -56,8 +56,8 @@ public class ReservationResponse {
         this.id = id;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 
     public void setVehicleId(Long vehicleId) {

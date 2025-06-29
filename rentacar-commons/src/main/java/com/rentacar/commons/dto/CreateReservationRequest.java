@@ -12,8 +12,8 @@ public class CreateReservationRequest {
 
     @NotNull
     @Positive
-    @Schema(description = "Customer ID", example = "101", required = true)
-    private Long customerId;
+    @Schema(description = "Customer Email", example = "name@email.com", required = true)
+    private String customerEmail;
 
     @NotNull
     @Positive
@@ -30,41 +30,42 @@ public class CreateReservationRequest {
     @Schema(description = "Reservation end date", example = "2025-06-15", required = true)
     private LocalDate endDate;
 
-    public CreateReservationRequest() {}
+    public CreateReservationRequest() {
+    }
 
-    public CreateReservationRequest(Long customerId, Long vehicleId, LocalDate startDate, LocalDate endDate) {
-        this.customerId = customerId;
+    public CreateReservationRequest(String customerEmail, Long vehicleId, LocalDate startDate, LocalDate endDate) {
+        this.customerEmail = customerEmail;
         this.vehicleId = vehicleId;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 
     public Long getVehicleId() {
         return vehicleId;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {

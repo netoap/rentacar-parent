@@ -11,8 +11,9 @@ public class RentVehicleRequest {
 
     @NotNull
     @Positive
-    @Schema(description = "Customer ID", example = "101")
-    private Long customerId;
+    @Schema(description = "Customer email", example = "cliente@correo.com")
+    private String customerEmail;
+
 
     @NotNull
     @Positive
@@ -29,8 +30,8 @@ public class RentVehicleRequest {
     @Schema(description = "Reservation end date", example = "2025-06-15")
     private LocalDate endDate;
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getCustomerEmail() {
+        return customerEmail;
     }
 
     public Long getVehicleId() {

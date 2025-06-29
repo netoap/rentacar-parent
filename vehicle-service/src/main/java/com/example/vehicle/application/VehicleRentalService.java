@@ -56,8 +56,8 @@ public class VehicleRentalService implements RentVehicleUseCase, ReturnVehicleUs
 
     @Override
     @CircuitBreaker(name = "customerService", fallbackMethod = "fallbackLoadCustomerWithDates")
-    public void rentVehicle(Long customerId, Long vehicleId, LocalDate startDate, LocalDate endDate) {
-        CustomerResponse customer = loadCustomerPort.loadCustomer(customerId);
+    public void rentVehicle(String customerEmail, Long vehicleId, LocalDate startDate, LocalDate endDate) {
+        CustomerResponse customer = loadCustomerPort.loadCustomer(customerEmail);
         Vehicle vehicle = vehicleRepositoryPort.findById(vehicleId)
                 .orElseThrow(() -> new VehicleNotFoundException(vehicleId));
 
@@ -68,9 +68,9 @@ public class VehicleRentalService implements RentVehicleUseCase, ReturnVehicleUs
         vehicle.setAvailable(false);
         vehicleRepositoryPort.save(vehicle);
 
-        createReservationPort.createReservation(customerId, vehicleId, startDate, endDate);
+        createReservationPort.createReservation(customerEmail, vehicleId, startDate, endDate);
 
-        eventPublisher.publishEvent(new VehicleRentedEvent(vehicleId, customerId));
+        eventPublisher.publishEvent(new VehicleRentedEvent(vehicleId, customerEmail));
     }
 
 

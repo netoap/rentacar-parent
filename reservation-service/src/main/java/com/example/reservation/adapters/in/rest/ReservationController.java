@@ -14,11 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "Reservations", description = "Endpoints for managing reservations")
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api/v1/reservations")
 @Validated
 public class ReservationController {
     private final CreateReservationUseCase reservationUseCase;
@@ -36,7 +40,7 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody CreateReservationRequest request) {
 
         Reservation reservation = reservationUseCase.createReservation(
-                request.getCustomerId(),
+                request.getCustomerEmail(),
                 request.getVehicleId(),
                 request.getStartDate(),
                 request.getEndDate()
@@ -45,7 +49,7 @@ public class ReservationController {
         return new ResponseEntity<>(
                 new ReservationResponse(
                         reservation.getId(),
-                        reservation.getCustomerId(),
+                        reservation.getCustomerEmail(),
                         reservation.getCarId(),
                         reservation.getStartDate(),
                         reservation.getEndDate()
@@ -59,12 +63,27 @@ public class ReservationController {
     @Operation(summary = "Get all reservations")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
         return ResponseEntity.ok(getReservationsQuery.getAllReservations().stream().map(r ->
-                new ReservationResponse(r.getId(), r.getCustomerId(), r.getCarId(), r.getStartDate(), r.getEndDate())).toList());
+                new ReservationResponse(r.getId(), r.getCustomerEmail(), r.getCarId(), r.getStartDate(), r.getEndDate())).toList());
     }
 
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
         cancelReservationUseCase.cancel(id); // sets status to CANCELLED
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/mine")
+    @Operation(
+            summary = "Get reservations for the currently authenticated user",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public ResponseEntity<List<ReservationResponse>> getMyReservations() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<Reservation> reservations = getReservationsQuery.getByCustomerEmail(email);
+        List<ReservationResponse> response = reservations.stream().map(r ->
+                new ReservationResponse(r.getId(), r.getCustomerEmail(), r.getCarId(), r.getStartDate(), r.getEndDate())
+        ).collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 }

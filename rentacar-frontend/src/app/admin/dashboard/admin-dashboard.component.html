@@ -1,0 +1,24 @@
+<mat-card>
+  <h2>Panel de Administración</h2>
+  Hola{{ displayName }} 👋.
+</mat-card>
+
+<div class="dashboard-grid">
+  <mat-card class="dashboard-card" routerLink="/admin/vehicles">
+    <mat-icon>directions_car</mat-icon>
+    <h3>Gestión de Vehículos</h3>
+    <p>Ver, crear y editar vehículos.</p>
+  </mat-card>
+
+  <mat-card class="dashboard-card" routerLink="/admin/create-vehicle">
+    <mat-icon>add_circle</mat-icon>
+    <h3>Nuevo Vehículo</h3>
+    <p>Registrar uno nuevo en la flota.</p>
+  </mat-card>
+
+  <mat-card class="dashboard-card" routerLink="/admin/reservations">
+    <mat-icon>event</mat-icon>
+    <h3>Reservas</h3>
+    <p>Revisar y administrar reservas activas.</p>
+  </mat-card>
+</div>

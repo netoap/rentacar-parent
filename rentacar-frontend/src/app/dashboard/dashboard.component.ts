@@ -1,24 +1,22 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
+  imports: [MatCardModule, MatIconModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [CommonModule, MatCardModule, MatButtonModule, RouterModule]
 })
-export class DashboardComponent {
-  email: string | null;
-  role: string | null;
+export class DashboardComponent implements OnInit {
+  user: { email: string; role: string } | null = null;
+  authService = inject(AuthService);
 
-  auth = inject(AuthService);
-  constructor() {
-    this.email = this.auth.getEmail();
-    this.role = this.auth.getRole();
+  ngOnInit(): void {
+    this.user = this.authService.getCurrentUser();
+  }
+  get displayName(): string {
+    return this.user?.email ? `, ${this.user.email}` : '';
   }
 }

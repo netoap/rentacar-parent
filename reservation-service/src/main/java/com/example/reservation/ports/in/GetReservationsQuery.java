@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface GetReservationsQuery {
     List<Reservation> getAllReservations();
+
+    List<Reservation> getByCustomerEmail(String email);
 }

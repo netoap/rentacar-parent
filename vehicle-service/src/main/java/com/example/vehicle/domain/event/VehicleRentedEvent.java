@@ -3,9 +3,9 @@ package com.example.vehicle.domain.event;
 
 public class VehicleRentedEvent {
     private final Long vehicleId;
-    private final Long customerId;
+    private final String customerId;
 
-    public VehicleRentedEvent(Long vehicleId, Long customerId) {
+    public VehicleRentedEvent(Long vehicleId, String customerId) {
         this.vehicleId = vehicleId;
         this.customerId = customerId;
     }
@@ -14,7 +14,7 @@ public class VehicleRentedEvent {
         return vehicleId;
     }
 
-    public Long getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 }

@@ -1,0 +1,38 @@
+<h2>Mis reservas</h2>
+
+<div class="filters">
+  <mat-checkbox [(ngModel)]="showOnlyActive">
+    Mostrar solo reservas activas
+  </mat-checkbox>
+</div>
+
+<mat-card *ngFor="let r of filteredReservations">
+  <mat-card-title>Reserva #{{ r.id }}</mat-card-title>
+  <mat-card-subtitle>
+    {{ r.startDate }} → {{ r.endDate }}
+  </mat-card-subtitle>
+
+  <p><strong>Vehículo:</strong> #{{ r.carId }}</p>
+  <p>
+    <strong>Estado:</strong>
+    <span class="status" [ngClass]="r.status.toLowerCase()">{{ r.status }}</span>
+  </p>
+
+  <div *ngIf="r.status !== 'CANCELLED'">
+    <button mat-raised-button color="warn" (click)="cancel(r.id)">
+      Cancelar reserva
+    </button>
+  </div>
+</mat-card>
+
+<div *ngIf="filteredReservations.length === 0" class="empty-message">
+  {{ showOnlyActive ? 'No tienes reservas activas.' : 'No tienes reservas registradas.' }}
+  <div class="actions">
+    <button mat-raised-button color="accent" routerLink="/vehicles">
+      <mat-icon class="icon">add_circle</mat-icon>
+      Crear nueva reserva
+    </button>
+  </div>
+</div>
+
+

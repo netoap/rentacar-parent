@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
-import { NavbarComponent } from './shared/navbar/navbar.component'; // adjust path as needed
+import { NavbarComponent } from './navbar/navbar.component'; // adjust path as needed
 
 @Component({
   selector: 'app-root',

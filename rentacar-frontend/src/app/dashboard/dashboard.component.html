@@ -1,18 +1,24 @@
 <mat-card>
-  <mat-card-title>Welcome, {{ email }}</mat-card-title>
-  <mat-card-subtitle>Your role: {{ role }}</mat-card-subtitle>
-
-  <div *ngIf="role === 'ADMIN'" class="admin-section">
-    <h3>Admin Dashboard</h3>
-    <p>Access to user management, reservations, and vehicle control.</p>
-    <button mat-raised-button color="primary" routerLink="/vehicles">Manage Vehicles</button>
-    <button mat-raised-button color="accent" routerLink="/admin/reservations">View All Reservations</button>
-  </div>
-
-  <div *ngIf="role === 'USER'" class="customer-section">
-    <h3>Customer Dashboard</h3>
-    <p>Welcome! You can view or create new reservations.</p>
-    <button mat-raised-button color="primary" routerLink="/vehicles">View Vehicles</button>
-    <button mat-raised-button color="accent" routerLink="/my-reservations">My Reservations</button>
-  </div>
+  <h2>Bienvenido{{ displayName }} 👋</h2>
+  <p>Este es tu panel de control. Aquí puedes gestionar tus reservas y consultar vehículos disponibles.</p>
 </mat-card>
+
+<div class="dashboard-grid">
+  <mat-card class="dashboard-card" routerLink="/dashboard/my-reservations">
+    <mat-icon>event</mat-icon>
+    <h3>Mis Reservas</h3>
+    <p>Ver todas tus reservas activas o pasadas.</p>
+  </mat-card>
+
+  <mat-card class="dashboard-card" routerLink="/dashboard/vehicles">
+    <mat-icon>directions_car</mat-icon>
+    <h3>Explorar Vehículos</h3>
+    <p>Consulta disponibilidad y reserva un vehículo.</p>
+  </mat-card>
+
+  <mat-card class="dashboard-card" routerLink="/dashboard/reservation-summary">
+    <mat-icon>assignment</mat-icon>
+    <h3>Resumen</h3>
+    <p>Revisa un resumen de tu última reserva.</p>
+  </mat-card>
+</div>

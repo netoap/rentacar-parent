@@ -12,7 +12,7 @@ public class CustomerClientAdapter implements LoadCustomerPort {
     }
 
     @Override
-    public CustomerResponse loadCustomer(Long customerId) {
-        return customerClient.getCustomerById(customerId);
+    public CustomerResponse loadCustomer(String email) {
+        return customerClient.getCustomerByEmail(email);
     }
 }

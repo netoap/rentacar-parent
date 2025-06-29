@@ -10,4 +10,5 @@ public interface ReservationRepositoryPort {
     Reservation findById(Long id);
     List<Reservation> findAll();
     List<Reservation> findByVehicleIdAndDateRange(Long vehicleId, LocalDate fromDate, LocalDate toDate);
+    List<Reservation> findByCustomerEmail(String email);
 }

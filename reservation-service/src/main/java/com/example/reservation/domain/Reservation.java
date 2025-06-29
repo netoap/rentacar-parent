@@ -6,23 +6,27 @@ import java.time.LocalDate;
 
 public class Reservation {
     private Long id;
-    private Long customerId;
+    private String customerEmail;
     private Long carId;
     private LocalDate startDate;
     private LocalDate endDate;
     private ReservationStatus status;
 
-    public Reservation(Long id, Long customerId, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
+    public Reservation(Long id, String customerEmail, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
         this.id = id;
-        this.customerId = customerId;
+        this.customerEmail = customerEmail;
         this.carId = carId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
     }
 
-    public Reservation(Long customerId, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
-        this(null, customerId, carId, startDate, endDate, status);
+    public Reservation(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
+        this.customerEmail = customerEmail;
+        this.carId = carId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
     }
 
     public Long getId() {
@@ -33,12 +37,12 @@ public class Reservation {
         this.id = id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public String getCustomerEmail() {
+        return customerEmail;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 
     public Long getCarId() {

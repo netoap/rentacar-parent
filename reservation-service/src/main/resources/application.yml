@@ -1,7 +1,10 @@
+server:
+  port: 8082
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/rent_a_car
-    username: admin
+    url: jdbc:postgresql://localhost:5432/rentacar_reservation
+    username: postgres
     password: secret
   jpa:
     hibernate:
@@ -10,5 +13,3 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   profiles:
     active: dev
-server:
-  port: 8082

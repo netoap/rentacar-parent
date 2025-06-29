@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/rent_a_car
+    url: jdbc:postgresql://localhost:5432/rentacar_vehicle  # o el nombre que elijas
     username: admin
     password: secret
   jpa:
@@ -10,24 +10,25 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   profiles:
     active: dev
+
 server:
   port: 8083
-customer:
-  service:
-    url: http://localhost:8081  # or the Eureka service name if using service discovery
+
 reservation:
   service:
     url: http://localhost:8082
+
 resilience4j:
   circuitbreaker:
     instances:
-      customerService:
+      reservationService:
         registerHealthIndicator: true
         slidingWindowSize: 5
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
         automaticTransitionFromOpenToHalfOpenEnabled: true
+
 springdoc:
   api-docs:
     path: /api/v1/docs
@@ -35,5 +36,7 @@ springdoc:
     path: /api/v1/swagger-ui.html
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+
 jwt:
-  secret: your-256-bit-secret-key-that-should-be-long-and-secure
+  secret: "hjd7f$#3ajLz9XPp!3qVmUc@V7gXkPgZ23mZn8wQ9tPfLs#4Nk"
+#  expiration-ms: 86400000  # 24h

@@ -4,14 +4,16 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { decodeToken } from './jwt-utils';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
+import { environment } from '../../environments/environment';
+import { UserProfile } from './user-profile.model';
+import { catchError, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  //private readonly API_URL = `${environment.apiBaseUrl}/auth/login`;
 
   private authState = new BehaviorSubject<boolean>(this.checkToken());
+
   auth$ = this.authState.asObservable();
   http = inject(HttpClient);
   router = inject(Router);
@@ -24,10 +26,10 @@ export class AuthService {
       }
     }, 50000);
   }
-
+ 
   login(username: string, password: string): Observable<{ token: string }> {
     return this.http
-      .post<{ token: string }>('http://localhost:8080/api/auth/login', {
+      .post<{ token: string }>(`${environment.apiBaseUrl}/auth/login`, {
         username,
         password,
       })
@@ -83,4 +85,17 @@ export class AuthService {
   getEmail(): string | null {
     return this.getCurrentUser()?.email ?? null;
   }
+
+  getUserProfile(): Observable<UserProfile> {
+  return this.http.get<UserProfile>(`${environment.apiBaseUrl}/auth/me`).pipe(
+    tap(profile => {
+      console.log('Perfil recibido:', profile)}),
+    catchError(err => {
+      console.error('Error al obtener el perfil:', err);
+      return throwError(() => err);
+    })
+  );
+}
+
+
 }

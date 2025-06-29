@@ -14,7 +14,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { LoginResponse } from './login-response';
 import { AuthService } from '../auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { decodeToken, JwtPayload } from '../auth/jwt-utils';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -47,30 +46,30 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) return;
+  if (this.loginForm.invalid) return;
 
-    const { username, password } = this.loginForm.value;
+  const { username, password } = this.loginForm.value;
 
-    this.authService.login(username, password).subscribe({
-      next: (res: LoginResponse) => {
-        localStorage.setItem('token', res.token);
+  this.authService.login(username, password).subscribe({
+    next: (res: LoginResponse) => {
+      localStorage.setItem('token', res.token);
+      this.snackBar.open('Inicio de sesión exitoso', 'Cerrar', { duration: 3000 });
 
-        const payload: JwtPayload | null = decodeToken(res.token);
-        const role = payload?.role ?? 'CUSTOMER';
+      const user = this.authService.getCurrentUser();
+      const role = user?.role ?? 'CUSTOMER';
 
-        if (role === 'ADMIN') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
+      if (role === 'ADMIN') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
+    },
+    error: () => {
+      this.snackBar.open('Usuario o contraseña incorrectos', 'Cerrar', {
+        duration: 3000,
+      });
+    },
+  });
+}
 
-        this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
-      },
-      error: () => {
-        this.snackBar.open('Invalid username or password', 'Close', {
-          duration: 3000,
-        });
-      },
-    });
-  }
 }

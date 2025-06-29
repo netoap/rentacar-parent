@@ -1,59 +1,82 @@
-# RentacarFrontend
+# 🚗 Rent a Car App – Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.1.
+Aplicación Angular moderna para la gestión de reservas de vehículos. Utiliza componentes standalone, enrutamiento centralizado y layouts separados por rol (`USER` y `ADMIN`).
 
-## Development server
+---
 
-To start a local development server, run:
+## 📁 Estructura del proyecto
+
+```
+src/
+├── admin/               # Panel administrativo (vehículos, reservas)
+├── auth/                # Autenticación, guards, y JWT
+├── dashboard/           # Panel del usuario autenticado
+├── reservation/         # Formularios y vistas de reservas
+├── vehicle/             # Calendario y listado de vehículos
+├── routing/             # Constantes centralizadas de rutas
+├── errors/              # Componentes de error (404, 403)
+├── app.routes.ts        # Declaración principal de rutas
+├── app.config.ts        # Configuración de arranque standalone
+```
+
+---
+
+## 🧭 Navegación y rutas
+
+- Declaradas en `app.routes.ts`
+- Centralizadas con `ROUTES_PATH` en `routing/app.routes.constants.ts`
+
+📄 Consulta [`ROUTES.md`](./ROUTES.md) para el listado completo de rutas por rol.
+
+---
+
+## 🛡️ Seguridad y layout
+
+- `authGuard`: protege rutas autenticadas
+- `roleGuard`: restringe rutas de administración
+- `UserLayoutComponent`: layout para `/dashboard`
+- `AdminLayoutComponent`: layout para `/admin`
+
+---
+
+## 🚀 Tecnologías utilizadas
+
+- Angular 16+ con Standalone API
+- Angular Material
+- JWT + guards personalizados
+- Lazy loading con `loadComponent()`
+- Diseño limpio y responsive
+
+---
+
+## ✅ Buenas prácticas aplicadas
+
+- Rutas centralizadas: `ROUTES_PATH`
+- Organización modular por dominio (`admin`, `auth`, `dashboard`, etc.)
+- Componentes reutilizables y layouts separados
+- Importación explícita de Angular Material por componente
+
+---
+
+## 🧪 Cómo iniciar el proyecto
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## ✍️ Para contribuir
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. Usa constantes desde `ROUTES_PATH` al agregar rutas nuevas.
+2. Coloca los componentes según su contexto (`admin/`, `dashboard/`, etc.).
+3. Si agregas una ruta nueva, actualiza también [`ROUTES.md`](./ROUTES.md).
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 📄 Documentación de rutas
 
-```bash
-ng generate --help
-```
+Consulta el archivo [`ROUTES.md`](./ROUTES.md) para ver todas las rutas disponibles por rol de usuario.
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---

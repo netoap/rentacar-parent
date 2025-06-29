@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,6 +13,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
+
+interface UserProfileResponse {
+  id: number;
+  username: string;
+  roles: string[];
+  createdAt: string;
+  enabled: boolean;
+}
 
 @Component({
   selector: 'app-register',
@@ -29,7 +38,7 @@ import { CommonModule } from '@angular/common';
     MatSnackBarModule,
   ],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -50,7 +59,6 @@ export class RegisterComponent {
       }
     );
 
-    // Sugerir username automáticamente desde el email
     this.form.get('email')?.valueChanges.subscribe((email) => {
       const usernameControl = this.form.get('username');
       if (usernameControl && !usernameControl.dirty) {
@@ -58,6 +66,13 @@ export class RegisterComponent {
         usernameControl.setValue(suggested, { emitEvent: false });
       }
     });
+  }
+
+  ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   passwordsMatchValidator(group: FormGroup) {
@@ -73,19 +88,18 @@ export class RegisterComponent {
     const roles = ['ROLE_USER'];
 
     this.http
-      .post<{ token: string }>('http://localhost:8080/api/auth/register', {
+      .post<UserProfileResponse>(`${environment.apiBaseUrl}/auth/register`, {
         email,
         username,
         password,
         roles,
       })
       .subscribe({
-        next: (response) => {
-          localStorage.setItem('token', response.token);
+        next: () => {
           this.snackBar.open('Registro exitoso. Bienvenido/a.', 'Cerrar', {
             duration: 3000,
           });
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           if (err.status === 409 && err.error?.message) {
@@ -101,9 +115,7 @@ export class RegisterComponent {
               ? 'Ya existe una cuenta con esos datos.'
               : 'Error al registrar. Inténtalo de nuevo.';
 
-          this.snackBar.open(msg, 'Cerrar', {
-            duration: 3000,
-          });
+          this.snackBar.open(msg, 'Cerrar', { duration: 3000 });
         },
       });
   }

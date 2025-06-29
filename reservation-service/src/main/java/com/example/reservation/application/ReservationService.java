@@ -27,8 +27,8 @@ public class ReservationService implements
     }
 
     @Override
-    public Reservation createReservation(Long customerId, Long carId, LocalDate startDate, LocalDate endDate) {
-        Reservation reservation = new Reservation(customerId, carId, startDate, endDate, ReservationStatus.CONFIRMED);
+    public Reservation createReservation(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate) {
+        Reservation reservation = new Reservation(customerEmail, carId, startDate, endDate, ReservationStatus.CONFIRMED);
         return reservationRepository.save(reservation);
     }
 
@@ -36,6 +36,11 @@ public class ReservationService implements
     @Override
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
+    }
+
+    @Override
+    public List<Reservation> getByCustomerEmail(String email) {
+        return reservationRepository.findByCustomerEmail(email);
     }
 
     @Override
