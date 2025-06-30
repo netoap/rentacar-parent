@@ -1,0 +1,42 @@
+.payment-list {
+  padding: 1rem;
+
+  .title {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+
+  .payment-card {
+    margin-bottom: 1rem;
+    border-left: 5px solid #2196f3;
+    transition: box-shadow 0.3s ease;
+    &:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+      gap: 1rem;
+    }
+
+    .status-paid {
+      color: green;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      color: orange;
+      font-weight: 600;
+    }
+  }
+}

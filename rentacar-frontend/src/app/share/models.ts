@@ -14,9 +14,13 @@ export interface Vehicle {
   id: number;
   model: string;
   year: number;
-  price: number;
   available: boolean;
+  licensePlate: string;
+  pricePerDay: number;
+  category?: string;
+  location?: string; 
 }
+
 
 export interface User {
   email: string;
@@ -25,4 +29,16 @@ export interface User {
 export interface AuthResponse {
   token: string;
   user: User;
+}
+
+export interface Payment {
+  reservationId: string;
+  amount: number;
+  status: string;
+  paymentDate: string; // 👈 importante
+  vehicle?: {
+    model: string;
+    licensePlate: string;
+  };
+  reservationPrice?: number;
 }

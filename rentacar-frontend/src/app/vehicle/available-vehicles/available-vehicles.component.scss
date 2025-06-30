@@ -1,0 +1,11 @@
+/* available-vehicles.component.scss */
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.vehicle-card {
+  padding: 10px;
+}

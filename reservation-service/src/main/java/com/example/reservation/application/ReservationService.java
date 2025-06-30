@@ -28,6 +28,10 @@ public class ReservationService implements
 
     @Override
     public Reservation createReservation(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate) {
+        boolean notAvailable = reservationRepository.isOverlappingReservation(carId, endDate, startDate);
+        if (notAvailable) {
+            throw new IllegalStateException("El vehículo ya está reservado en esas fechas.");
+        }
         Reservation reservation = new Reservation(customerEmail, carId, startDate, endDate, ReservationStatus.CONFIRMED);
         return reservationRepository.save(reservation);
     }
@@ -42,6 +46,16 @@ public class ReservationService implements
     public List<Reservation> getByCustomerEmail(String email) {
         return reservationRepository.findByCustomerEmail(email);
     }
+
+    @Override
+    public Reservation getById(Long id) {
+        Reservation reservation = reservationRepository.findById(id);
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation not found with ID: " + id);
+        }
+        return reservation;
+    }
+
 
     @Override
     public VehicleAvailabilityResponse getVehicleAvailability(Long vehicleId, LocalDate from, LocalDate to) {
@@ -59,6 +73,12 @@ public class ReservationService implements
 
         List<LocalDate> sorted = booked.stream().sorted().collect(Collectors.toList());
         return new VehicleAvailabilityResponse(vehicleId, sorted);
+    }
+
+    @Override
+    public boolean isVehicleUnavailable(Long vehicleId, LocalDate start, LocalDate end) {
+        return reservationRepository.isOverlappingReservation(vehicleId, end, start);
+
     }
 
     @Override

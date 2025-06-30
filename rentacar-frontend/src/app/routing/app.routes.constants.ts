@@ -15,6 +15,7 @@ export const ROUTES_PATH = {
   ADMIN_CREATE_VEHICLE: 'create-vehicle',
   ADMIN_EDIT_VEHICLE: 'edit-vehicle/:id',
   ADMIN_RESERVATIONS: 'reservations',
+  PAYMENT: 'payment',
 
   UNAUTHORIZED: 'unauthorized'
 } as const;

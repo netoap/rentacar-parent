@@ -34,7 +34,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         return authenticateUserUseCase.authenticate(request.username(), request.password()).<ResponseEntity<?>>map(user -> {
-            String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRoles());
+            String token = jwtTokenProvider.generateToken(user);
             return ResponseEntity.ok(Map.of("token", token));
         }).orElseGet(() -> ResponseEntity.status(401).body(new ErrorResponse(401, "Unauthorized", "Invalid credentials")));
     }

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class CreateReservationRequest {
 
     @NotNull
-    @Positive
+    @jakarta.validation.constraints.Email
     @Schema(description = "Customer Email", example = "name@email.com", required = true)
     private String customerEmail;
 
@@ -29,6 +29,7 @@ public class CreateReservationRequest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Schema(description = "Reservation end date", example = "2025-06-15", required = true)
     private LocalDate endDate;
+
 
     public CreateReservationRequest() {
     }

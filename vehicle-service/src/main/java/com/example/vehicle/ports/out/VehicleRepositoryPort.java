@@ -11,4 +11,5 @@ public interface VehicleRepositoryPort {
     Optional<Vehicle> findById(Long id);
     List<Vehicle> findAll();
     void deleteById(Long id);
+    List<Vehicle> getAllAvailableVehicles();
 }

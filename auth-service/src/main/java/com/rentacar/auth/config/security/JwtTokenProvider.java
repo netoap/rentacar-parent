@@ -1,5 +1,6 @@
 package com.rentacar.auth.config.security;
 
+import com.rentacar.auth.domain.UserEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -26,10 +27,11 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, Set<String> roles) {
+    public String generateToken(UserEntity user) {
         return Jwts.builder()
-                .setSubject(username)
-                .claim("roles", roles)
+                .setSubject(user.getUsername())
+                .claim("email", user.getEmail())
+                .claim("roles", user.getRoles())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

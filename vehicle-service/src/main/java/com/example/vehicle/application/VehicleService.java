@@ -9,27 +9,46 @@ import com.example.vehicle.ports.in.*;
 import com.example.vehicle.ports.out.VehicleRepositoryPort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import com.example.vehicle.adapters.out.client.ReservationClient;
 @Service
 public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,GetAllVehiclesQuery,GetAvailableVehiclesQuery, UpdateVehicleUseCase, DeleteVehicleUseCase  {
 
     private final VehicleRepositoryPort vehicleRepositoryPort;
+    private final ReservationClient reservationClient;
 
-    public VehicleService(VehicleRepositoryPort vehicleRepositoryPort) {
+    public VehicleService(VehicleRepositoryPort vehicleRepositoryPort, ReservationClient reservationClient) {
         this.vehicleRepositoryPort = vehicleRepositoryPort;
+        this.reservationClient = reservationClient;
     }
 
     @Override
     public VehicleResponse addVehicle(CreateVehicleRequest request) {
-        Vehicle vehicle = new Vehicle(request.getModel(), request.getYear(), true); // default: available = true
-        return VehicleResponse.fromDomain(vehicleRepositoryPort.save(vehicle));
+        Vehicle vehicle = Vehicle.builder()
+                .model(request.getModel())
+                .year(request.getYear())
+                .available(true)
+                .licensePlate(request.getLicensePlate())
+                .pricePerDay(request.getPricePerDay())
+                .build();
+        vehicle = vehicleRepositoryPort.save(vehicle);
+        return VehicleResponse.fromDomain(vehicle);
     }
 
     @Override
     public List<VehicleResponse> getAvailableVehicles() {
         return vehicleRepositoryPort.findAvailableVehicles().stream()
+                .map(VehicleResponse::fromDomain)
+                .toList();
+    }
+
+    @Override
+    public List<VehicleResponse> getAvailableVehicles(LocalDate start, LocalDate end) {
+        return vehicleRepositoryPort.findAll().stream()
+                .filter(Vehicle::isAvailable)
+                .filter(vehicle -> reservationClient.isVehicleAvailable(vehicle.getId(), start, end))
                 .map(VehicleResponse::fromDomain)
                 .toList();
     }
@@ -49,14 +68,23 @@ public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,Ge
     }
 
     @Override
+    public List<Vehicle> getAllAvailableVehicles() {
+        return vehicleRepositoryPort.getAllAvailableVehicles();
+    }
+
+    @Override
     public VehicleResponse update(Long id, UpdateVehicleRequest request) {
         Vehicle existing = vehicleRepositoryPort.findById(id)
-                .orElseThrow(()-> new VehicleNotFoundException(id));
+                .orElseThrow(() -> new VehicleNotFoundException(id));
         existing.setModel(request.getModel());
         existing.setYear(request.getYear());
         existing.setAvailable(request.isAvailable());
-        return VehicleResponse.fromDomain(vehicleRepositoryPort.save(existing));
+        existing.setLicensePlate(request.getLicensePlate());
+        existing.setPricePerDay(request.getPricePerDay());
+        Vehicle vehicle = vehicleRepositoryPort.save(existing);
+        return VehicleResponse.fromDomain(vehicle);
     }
+
 
     @Override
     public void delete(Long id) {

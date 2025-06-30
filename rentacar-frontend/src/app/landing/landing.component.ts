@@ -48,13 +48,13 @@ export class LandingComponent {
   search(): void {
     if (this.searchForm.invalid) return;
 
-    const location = this.searchForm.get('location')?.value;
+    //const location = this.searchForm.get('location')?.value;
     const startDate = this.searchForm.get('startDate')?.value;
     const endDate = this.searchForm.get('endDate')?.value;
 
     this.router.navigate(['/vehicles'], {
       queryParams: {
-        location,
+        //location,
         start: startDate.toISOString().split('T')[0],
         end: endDate.toISOString().split('T')[0],
       },

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -6,6 +6,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -14,11 +17,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { environment } from '../../environments/environment';
 import { ReservationService } from '../services/reservation.service';
 import { AuthService } from '../auth/auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { dateRangeValidator } from '../share/dateRangeValidator';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-reservation-form',
@@ -46,50 +50,81 @@ export class ReservationFormComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
+  private router = inject(Router); 
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      const { start, end, location } = params;
-
-      this.form = this.fb.group({
-        vehicleId: [
-          this.route.snapshot.paramMap.get('vehicleId'),
-          Validators.required,
-        ],
-        startDate: [start || '', Validators.required],
-        endDate: [end || '', Validators.required],
-        location: [{ value: location || '', disabled: true }],
-        vehicleModel: [{ value: '', disabled: true }],
-      });
-    });
     const vehicleId = this.route.snapshot.paramMap.get('vehicleId');
 
+    this.form = this.fb.group(
+      {
+        vehicleId: [vehicleId, Validators.required],
+        startDate: ['', Validators.required],
+        endDate: ['', Validators.required],
+        location: [{ value: 'Aeropuerto de Madrid', disabled: true }],
+        vehicleModel: [{ value: '', disabled: true }],
+        email: [{ value: this.authService.getEmail(), disabled: true }],
+      },
+      {
+        validators: [dateRangeValidator], // 👈 aquí se aplica
+      }
+    );
+
+    this.route.queryParams.subscribe((params) => {
+      this.form.patchValue({
+        startDate: params['start'] || '',
+        endDate: params['end'] || '',
+      });
+    });
+
     this.http
-      .get(`${environment.apiBaseUrl}/vehicles/${vehicleId}/model`)
+      .get<{ model: string }>(
+        `${environment.apiBaseUrl}/vehicles/${vehicleId}/model`
+      )
       .subscribe({
-        next: (model: any) => {/* eslint-disable-line @typescript-eslint/no-explicit-any */
-          this.form.patchValue({ vehicleModel: model });
+        next: (res) => {
+          this.form.patchValue({ vehicleModel: res.model });
+        },
+        error: () => {
+          this.snackBar.open(
+            'No se pudo obtener el modelo del vehículo',
+            'Cerrar',
+            {
+              duration: 3000,
+            }
+          );
         },
       });
+  }
+
+  formatDate(date: Date): string {
+    return new Date(date).toISOString().split('T')[0]; // "YYYY-MM-DD"
   }
 
   submit(): void {
     if (this.form.invalid) return;
 
+    const { startDate, endDate, vehicleId } = this.form.value;
+
     const request = {
-      customerEmail: this.authService.getEmail()!, // o getCurrentUser()?.email
-      vehicleId: this.form.value.vehicleId!,
-      startDate: this.form.value.startDate!,
-      endDate: this.form.value.endDate!,
+      customerEmail: '',
+      vehicleId: +vehicleId,
+      startDate: this.formatDate(startDate),
+      endDate: this.formatDate(endDate),
     };
+    console.log('Request to create reservation:', request);
 
     this.reservationService.createReservation(request).subscribe({
-      next: () =>
-        this.snackBar.open('Reserva creada', 'Cerrar', { duration: 3000 }),
-      error: () =>
-        this.snackBar.open('Error al crear la reserva', 'Cerrar', {
-          duration: 3000,
-        }),
+      next: () =>{
+        this.snackBar.open('Reserva creada', 'Cerrar', { duration: 3000 });
+        this.router.navigate(['/dashboard/my-reservations']); // 👈 redirección automática
+      },
+      error: (err) => {
+        const message =
+          err.status === 409
+            ? 'Este vehículo ya está reservado en esas fechas.'
+            : 'Error al crear la reserva';
+        this.snackBar.open(message, 'Cerrar', { duration: 3000 });
+      },
     });
   }
 }

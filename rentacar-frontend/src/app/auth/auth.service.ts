@@ -28,11 +28,7 @@ export class AuthService {
   }
  
   login(username: string, password: string): Observable<{ token: string }> {
-    return this.http
-      .post<{ token: string }>(`${environment.apiBaseUrl}/auth/login`, {
-        username,
-        password,
-      })
+    return this.http.post<{ token: string }>(`${environment.apiBaseUrl}/auth/login`, { username, password, })
       .pipe(
         tap((response) => {
           localStorage.setItem('token', response.token);
@@ -71,9 +67,8 @@ export class AuthService {
       : payload.role || 'USER';
 
     const role = rawRole.replace('ROLE_', '');
-
     return {
-      email: payload.sub,
+      email: payload.email ?? '',
       role,
     };
   }

@@ -1,8 +1,35 @@
-
-.form-container {
+:host {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap; // 👈 importante: que todo quede en una línea
   gap: 1rem;
-  max-width: 500px;
-  margin: 2rem auto;
+  background: #f8f9fb;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  overflow-x: auto;
+}
+
+mat-form-field {
+  flex: 1;
+  min-width: 160px;
+  margin: 0;
+}
+
+button[type='submit'] {
+  height: 36px;
+  padding: 0 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 20px;
+  white-space: nowrap;
+  margin-left: auto;
+  align-self: center;
 }

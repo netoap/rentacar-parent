@@ -1,0 +1,30 @@
+<div class="payment-list">
+  <h2 class="title">Mis Pagos</h2>
+
+  <mat-card *ngFor="let payment of payments" class="payment-card">
+    <mat-card-header>
+      <mat-card-title class="card-title">Reserva #{{ payment.reservationId }}</mat-card-title>
+      <mat-card-subtitle>{{ payment.paymentDate | date: 'short' }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="row">
+        <p><strong>Monto:</strong> €{{ payment.amount }}</p>
+        <p><strong>Estado:</strong> 
+          <span [ngClass]="{
+            'status-paid': payment.status === 'PAID',
+            'status-pending': payment.status === 'PENDING'
+          }">{{ payment.status }}</span>
+        </p>
+      </div>
+
+      <div class="row" *ngIf="payment.vehicle">
+        <p><strong>Vehículo:</strong> {{ payment.vehicle.model }} ({{ payment.vehicle.licensePlate }})</p>
+      </div>
+
+      <div class="row" *ngIf="payment.reservationPrice">
+        <p><strong>Precio de reserva:</strong> €{{ payment.reservationPrice }}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

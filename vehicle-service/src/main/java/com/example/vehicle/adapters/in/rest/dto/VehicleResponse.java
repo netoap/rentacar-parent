@@ -2,7 +2,17 @@ package com.example.vehicle.adapters.in.rest.dto;
 
 import com.example.vehicle.domain.Vehicle;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Response DTO for Vehicle")
 public class VehicleResponse {
 
@@ -18,23 +28,20 @@ public class VehicleResponse {
     @Schema(description = "Availability status", example = "true")
     private boolean available;
 
-    public VehicleResponse(Long id, String model, int year, boolean available) {
-        this.id = id;
-        this.model = model;
-        this.year = year;
-        this.available = available;
-    }
-    public Long getId() { return id; }
-    public String getModel() { return model; }
-    public int getYear() { return year; }
-    public boolean isAvailable() { return available; }
+    @Schema(description = "License plate", example = "1234-ABC")
+    private String licensePlate;
+
+    @Schema(description = "Rental price per day", example = "45.00")
+    private BigDecimal pricePerDay;
 
     public static VehicleResponse fromDomain(Vehicle vehicle) {
         return new VehicleResponse(
                 vehicle.getId(),
                 vehicle.getModel(),
                 vehicle.getYear(),
-                vehicle.isAvailable()
+                vehicle.isAvailable(),
+                vehicle.getLicensePlate(),
+                vehicle.getPricePerDay()
         );
     }
 }

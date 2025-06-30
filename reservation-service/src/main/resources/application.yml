@@ -1,5 +1,8 @@
 server:
   port: 8082
+vehicle:
+  service:
+    url: http://localhost:8083
 
 spring:
   datasource:

@@ -5,9 +5,9 @@ spring:
   application:
     name: payment-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/rentacardb
-    username: your_user
-    password: your_password
+    url: jdbc:postgresql://localhost:5432/rentacar_payment
+    username: postgres
+    password: secret
   jpa:
     hibernate:
       ddl-auto: update

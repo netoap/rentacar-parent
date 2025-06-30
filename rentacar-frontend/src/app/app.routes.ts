@@ -5,76 +5,105 @@ import { roleGuard } from './auth/role.guard';
 import { AdminLayoutComponent } from './admin/layout/admin-layout/admin-layout.component';
 import { UserLayoutComponent } from './dashboard/layout/user-layout/user-layout.component';
 import { ROLES } from './auth/roles';
-import { ROUTES_PATH } from './routing/app.routes.constants';
+import { redirectGuard } from './auth/redirect.guard'; // 👈 nuevo guard
 
 export const routes: Routes = [
-  // 🌐 Public
+  // 🔁 Redirección raíz inteligente
   {
-    path: ROUTES_PATH.ROOT,
+    path: '',
+    canActivate: [redirectGuard],
     loadComponent: () =>
-      import('./landing/landing.component').then(m => m.LandingComponent),
-  },
-  {
-    path: ROUTES_PATH.LOGIN,
-    loadComponent: () =>
-      import('./login/login.component').then(m => m.LoginComponent),
-    canActivate: [GuestGuard],
-  },
-  {
-    path: ROUTES_PATH.REGISTER,
-    loadComponent: () =>
-      import('./register/register.component').then(m => m.RegisterComponent),
-    canActivate: [GuestGuard],
+      import('./redirect-page').then((m) => m.RedirectPageComponent),
   },
 
-  // 👤 User area
+  // 🌐 Pública (opcional)
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./landing/landing.component').then((m) => m.LandingComponent),
+  },
+
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./login/login.component').then((m) => m.LoginComponent),
+    canActivate: [GuestGuard],
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./register/register.component').then((m) => m.RegisterComponent),
+    canActivate: [GuestGuard],
+  },
   {
   path: 'vehicles',
   loadComponent: () =>
-    import('./vehicle-list/vehicle-list.component').then(m => m.VehicleListComponent)
-}
-,
+    import('./vehicle/available-vehicles/available-vehicles.component').then(
+      (m) => m.AvailableVehiclesComponent
+    ),
+},
+
+  // 👤 Área usuario
+ /* {
+    path: 'vehicles',
+    loadComponent: () =>
+      import('./vehicle-list/vehicle-list.component').then(
+        (m) => m.VehicleListComponent
+      ),
+  },*/
   {
-    path: ROUTES_PATH.DASHBOARD,
+    path: 'dashboard',
     component: UserLayoutComponent,
     canActivate: [authGuard],
     children: [
       {
-        path: ROUTES_PATH.ROOT,
+        path: '',
         loadComponent: () =>
-          import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+          import('./dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
       },
       {
-        path: ROUTES_PATH.DASHBOARD_VEHICLES,
+        path: 'vehicles',
         loadComponent: () =>
-          import('./vehicle-list/vehicle-list.component').then(m => m.VehicleListComponent),
+          import('./vehicle-list/vehicle-list.component').then(
+            (m) => m.VehicleListComponent
+          ),
       },
       {
-        path: ROUTES_PATH.RESERVE,
+        path: 'reserve/:vehicleId',
         loadComponent: () =>
-          import('./reservation-form/reservation-form.component').then(m => m.ReservationFormComponent),
+          import('./reservation-form/reservation-form.component').then(
+            (m) => m.ReservationFormComponent
+          ),
       },
       {
-        path: ROUTES_PATH.MY_RESERVATIONS,
+        path: 'my-reservations',
         loadComponent: () =>
-          import('./reservation/my-reservations/my-reservations.component').then(m => m.MyReservationsComponent),
+          import(
+            './reservation/my-reservations/my-reservations.component'
+          ).then((m) => m.MyReservationsComponent),
       },
       {
-        path: ROUTES_PATH.RESERVATION_SUMMARY,
+        path: 'reservation-summary',
         loadComponent: () =>
-          import('./reservation/reservation-summary/reservation-summary.component').then(m => m.ReservationSummaryComponent),
+          import(
+            './reservation/reservation-summary/reservation-summary.component'
+          ).then((m) => m.ReservationSummaryComponent),
       },
       {
-        path: ROUTES_PATH.VEHICLE_CALENDAR,
+        path: 'vehicles/:vehicleId/calendar',
         loadComponent: () =>
-          import('./vehicle/vehicle-calendar/vehicle-calendar.component').then(m => m.VehicleCalendarComponent),
-      }
-    ]
+          import('./vehicle/vehicle-calendar/vehicle-calendar.component').then(
+            (m) => m.VehicleCalendarComponent
+          ),
+      },
+    ],
   },
 
-  // 🛠️ Admin area
+  // 🛠️ Área admin
   {
-    path: ROUTES_PATH.ADMIN,
+    path: 'admin',
     component: AdminLayoutComponent,
     canActivate: [authGuard, roleGuard],
     data: { expectedRole: ROLES.ADMIN },
@@ -82,46 +111,66 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'dashboard',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
-        path: ROUTES_PATH.ADMIN_DASHBOARD,
+        path: 'dashboard',
         loadComponent: () =>
-          import('./admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
-        
+          import('./admin/dashboard/admin-dashboard.component').then(
+            (m) => m.AdminDashboardComponent
+          ),
       },
       {
-        path: ROUTES_PATH.ADMIN_VEHICLES,
+        path: 'vehicles',
         loadComponent: () =>
-          import('./admin/admin-vehicles/admin-vehicles.component').then(m => m.AdminVehiclesComponent),
+          import('./admin/admin-vehicles/admin-vehicles.component').then(
+            (m) => m.AdminVehiclesComponent
+          ),
       },
       {
-        path: ROUTES_PATH.ADMIN_CREATE_VEHICLE,
+        path: 'create-vehicle',
         loadComponent: () =>
-          import('./admin/create-vehicle/create-vehicle.component').then(m => m.CreateVehicleComponent),
+          import('./admin/create-vehicle/create-vehicle.component').then(
+            (m) => m.CreateVehicleComponent
+          ),
       },
       {
-        path: ROUTES_PATH.ADMIN_EDIT_VEHICLE,
+        path: 'edit-vehicle/:id',
         loadComponent: () =>
-          import('./admin/edit-vehicle/edit-vehicle.component').then(m => m.EditVehicleComponent),
+          import('./admin/edit-vehicle/edit-vehicle.component').then(
+            (m) => m.EditVehicleComponent
+          ),
       },
       {
-        path: ROUTES_PATH.ADMIN_RESERVATIONS,
+        path: 'admin-reservations',
         loadComponent: () =>
-          import('./reservation/admin-reservations/admin-reservations.component').then(m => m.AdminReservationsComponent),
-      }
-    ]
+          import(
+            './reservation/admin-reservations/admin-reservations.component'
+          ).then((m) => m.AdminReservationsComponent),
+      },
+      {
+        path: 'payment',
+        loadComponent: () =>
+          import('./payment/payment-list.component').then(
+            (m) => m.PaymentListComponent
+          ),
+      },
+    ],
   },
 
-  // ❌ Errors
+  // ❌ Errores
   {
-    path: ROUTES_PATH.UNAUTHORIZED,
+    path: 'unauthorized',
     loadComponent: () =>
-      import('./errors/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent),
+      import('./errors/unauthorized/unauthorized.component').then(
+        (m) => m.UnauthorizedComponent
+      ),
   },
   {
     path: '**',
     loadComponent: () =>
-      import('./errors/not-found/not-found.component').then(m => m.NotFoundComponent),
-  }
+      import('./errors/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent
+      ),
+  },
 ];

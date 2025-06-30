@@ -4,6 +4,8 @@ import com.example.vehicle.adapters.in.rest.dto.CreateVehicleRequest;
 import com.example.vehicle.adapters.in.rest.dto.RentVehicleRequest;
 import com.example.vehicle.adapters.in.rest.dto.UpdateVehicleRequest;
 import com.example.vehicle.adapters.in.rest.dto.VehicleResponse;
+import com.example.vehicle.adapters.out.jpa.mapper.JpaVehicleMapper;
+import com.example.vehicle.domain.Vehicle;
 import com.example.vehicle.ports.in.*;
 import com.rentacar.commons.dto.VehicleAvailabilityResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
@@ -48,6 +51,16 @@ public class VehicleController {
         this.getVehicleAvailabilityUseCase = getVehicleAvailabilityUseCase;
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<VehicleResponse>> getAvailableVehicles() {
+        List<Vehicle> vehicles = getAllVehiclesQuery.getAllAvailableVehicles();
+        List<VehicleResponse> response = vehicles.stream()
+                .map(JpaVehicleMapper::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @PostMapping
     @Operation(summary = "Create a new vehicle")
@@ -55,11 +68,25 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addVehicleUseCase.addVehicle(request));
     }
 
-    @GetMapping("/available")
-    @Operation(summary = "Get all available vehicles")
-    public ResponseEntity<List<VehicleResponse>> getAvailableVehicle() {
-        return ResponseEntity.ok(getAvailableVehiclesQuery.getAvailableVehicles());
+    @GetMapping("/available-range")
+    @Operation(summary = "Listar vehículos disponibles entre fechas")
+    public ResponseEntity<List<VehicleResponse>> getAvailableBetweenDates(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+
+        return ResponseEntity.ok(getAvailableVehiclesQuery.getAvailableVehicles(start, end));
     }
+
+
+//    @GetMapping("/available")
+//    @Operation(summary = "Get vehicles available in a date range")
+//    public ResponseEntity<List<VehicleResponse>> getAvailableVehicleByDates(
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end
+//    ) {
+//        return ResponseEntity.ok(getAvailableVehiclesQuery.getAvailableVehicles(start, end));
+//    }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Get vehicle by ID")
@@ -69,9 +96,11 @@ public class VehicleController {
 
     @GetMapping("/{id}/model")
     @Operation(summary = "Get only the model of a vehicle by ID")
-    public ResponseEntity<String> getVehicleModelById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(getVehicleByIdQuery.getById(id).getModel());
+    public ResponseEntity<Map<String, String>> getVehicleModelById(@PathVariable("id") Long id) {
+        String model = getVehicleByIdQuery.getById(id).getModel();
+        return ResponseEntity.ok(Map.of("model", model));
     }
+
     @GetMapping("/search")
     @Operation(summary = "Buscar vehículos por modelo")
     public ResponseEntity<List<VehicleResponse>> searchByModel(@RequestParam String model) {
@@ -100,9 +129,6 @@ public class VehicleController {
 
         return ResponseEntity.ok(all.subList(from, to));
     }
-
-
-
 
     @PutMapping("/{id}")
     @Operation(summary = "Update vehicle by ID")
@@ -147,6 +173,7 @@ public class VehicleController {
         VehicleAvailabilityResponse response = getVehicleAvailabilityUseCase.getVehicleAvailability(vehicleId, fromDate, toDate);
         return ResponseEntity.ok(response);
     }
+
 
 
 }
