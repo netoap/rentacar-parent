@@ -19,7 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+import com.example.reservation.adapters.out.feign.VehicleClient;
 @Tag(name = "Reservations", description = "Endpoints for managing reservations")
 @RestController
 @RequestMapping("/api/v1/reservations")
@@ -28,11 +28,13 @@ public class ReservationController {
     private final CreateReservationUseCase reservationUseCase;
     private final GetReservationsQuery getReservationsQuery;
     private final CancelReservationUseCase cancelReservationUseCase;
+    private final VehicleClient vehicleClient;
 
-    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsQuery getReservationsQuery, CancelReservationUseCase cancelReservationUseCase) {
+    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsQuery getReservationsQuery, CancelReservationUseCase cancelReservationUseCase, VehicleClient vehicleClient) {
         this.reservationUseCase = reservationUseCase;
         this.getReservationsQuery = getReservationsQuery;
         this.cancelReservationUseCase = cancelReservationUseCase;
+        this.vehicleClient = vehicleClient;
     }
 
     @PostMapping
@@ -45,12 +47,13 @@ public class ReservationController {
                 request.getStartDate(),
                 request.getEndDate()
         );
-
+        String model = vehicleClient.getVehicleModelById(request.getVehicleId());
         return new ResponseEntity<>(
                 new ReservationResponse(
                         reservation.getId(),
                         reservation.getCustomerEmail(),
                         reservation.getCarId(),
+                        model,
                         reservation.getStartDate(),
                         reservation.getEndDate()
                 ),
@@ -59,18 +62,34 @@ public class ReservationController {
     }
 
 
+
     @GetMapping
     @Operation(summary = "Get all reservations")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
-        return ResponseEntity.ok(getReservationsQuery.getAllReservations().stream().map(r ->
-                new ReservationResponse(r.getId(), r.getCustomerEmail(), r.getCarId(), r.getStartDate(), r.getEndDate())).toList());
+        List<ReservationResponse> responses = getReservationsQuery.getAllReservations().stream()
+                .map(r -> {
+                    String model = vehicleClient.getVehicleModelById(r.getCarId());
+                    return new ReservationResponse(
+                            r.getId(),
+                            r.getCustomerEmail(),
+                            r.getCarId(),
+                            model,
+                            r.getStartDate(),
+                            r.getEndDate()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
     }
+
 
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
         cancelReservationUseCase.cancel(id); // sets status to CANCELLED
         return ResponseEntity.noContent().build();
     }
+
 
 
     @GetMapping("/mine")
@@ -81,9 +100,21 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponse>> getMyReservations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Reservation> reservations = getReservationsQuery.getByCustomerEmail(email);
-        List<ReservationResponse> response = reservations.stream().map(r ->
-                new ReservationResponse(r.getId(), r.getCustomerEmail(), r.getCarId(), r.getStartDate(), r.getEndDate())
-        ).collect(Collectors.toList());
+
+        List<ReservationResponse> response = reservations.stream()
+                .map(r -> {
+                    String model = vehicleClient.getVehicleModelById(r.getCarId());
+                    return new ReservationResponse(
+                            r.getId(),
+                            r.getCustomerEmail(),
+                            r.getCarId(),
+                            model,
+                            r.getStartDate(),
+                            r.getEndDate()
+                    );
+                })
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(response);
     }
 }

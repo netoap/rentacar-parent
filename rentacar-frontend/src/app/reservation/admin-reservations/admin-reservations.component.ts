@@ -17,6 +17,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin-reservations',
@@ -58,7 +59,7 @@ export class AdminReservationsComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(): void {
-    this.http.get<Reservation[]>('/api/v1/reservations').subscribe((data) => {
+    this.http.get<Reservation[]>(`${environment.apiBaseUrl}/reservations`).subscribe((data) => {
       this.dataSource.data = data;
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;

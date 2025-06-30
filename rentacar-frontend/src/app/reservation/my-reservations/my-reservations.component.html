@@ -12,7 +12,7 @@
     {{ r.startDate }} → {{ r.endDate }}
   </mat-card-subtitle>
 
-  <p><strong>Vehículo:</strong> #{{ r.carId }}</p>
+  <p><strong>Vehículo:</strong> {{ r.vehicleModel }} (#{{ r.carId }})</p>
   <p>
     <strong>Estado:</strong>
     <span class="status" [ngClass]="r.status.toLowerCase()">{{ r.status }}</span>
@@ -20,7 +20,7 @@
 
   <div *ngIf="r.status !== 'CANCELLED'">
     <button mat-raised-button color="warn" (click)="cancel(r.id)">
-      Cancelar reserva
+      <mat-icon>cancel</mat-icon> Cancelar reserva
     </button>
   </div>
 </mat-card>
@@ -29,8 +29,7 @@
   {{ showOnlyActive ? 'No tienes reservas activas.' : 'No tienes reservas registradas.' }}
   <div class="actions">
     <button mat-raised-button color="accent" routerLink="/vehicles">
-      <mat-icon class="icon">add_circle</mat-icon>
-      Crear nueva reserva
+      <mat-icon class="icon">add_circle</mat-icon>Crear nueva reserva
     </button>
   </div>
 </div>

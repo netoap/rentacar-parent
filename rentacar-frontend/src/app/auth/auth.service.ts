@@ -81,6 +81,19 @@ export class AuthService {
   getRole(): string | null {
     return this.getCurrentUser()?.role ?? null;
   }
+  
+  getRoles(): string[] {
+    const token = localStorage.getItem('token');
+    const payload = token ? decodeToken(token) : null;
+
+    if (!payload) return [];
+
+    if (Array.isArray(payload.roles)) return payload.roles.map(r => r.replace('ROLE_', ''));
+    if (typeof payload.role === 'string') return [payload.role.replace('ROLE_', '')];
+    
+    return [];
+  }
+
 
   getEmail(): string | null {
     return this.getCurrentUser()?.email ?? null;

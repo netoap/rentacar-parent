@@ -19,48 +19,52 @@ import { Vehicle } from '../../services/vehicle';
   templateUrl: './admin-vehicles.component.html',
   styleUrls: ['./admin-vehicles.component.scss'],
   imports: [
-      CommonModule,
+    CommonModule,
     FormsModule,
-    MatFormFieldModule,     
-    MatInputModule,        
+    MatFormFieldModule,
+    MatInputModule,
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
     MatButtonModule,
-    MatCardModule
-  ]
+    MatCardModule,
+  ],
 })
 export class AdminVehiclesComponent implements OnInit {
   vehicles: Vehicle[] = [];
-   dataSource = new MatTableDataSource<Vehicle>();
+  dataSource = new MatTableDataSource<Vehicle>();
   pageSize = 5;
   pageIndex = 0;
   filterValue = '';
   http = inject(HttpClient);
-router = inject(Router);
-snackBar = inject(MatSnackBar);
- 
+  router = inject(Router);
+  snackBar = inject(MatSnackBar);
+  displayedColumns: string[] = ['id', 'model', 'year', 'available', 'actions'];
 
   ngOnInit(): void {
     this.fetchVehicles();
   }
-    onPageChange(event: PageEvent): void {
+  onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     // puedes llamar a fetchVehicles() si paginas manualmente
   }
 
-   fetchVehicles(): void {
+  fetchVehicles(): void {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<Vehicle[]>(`${environment.apiBaseUrl}/vehicles`, { headers })
+    this.http
+      .get<Vehicle[]>(`${environment.apiBaseUrl}/vehicles`, { headers })
       .subscribe({
-        next: data => {
+        next: (data) => {
           this.dataSource.data = data;
           this.applyFilter();
         },
-        error: () => this.snackBar.open('Error al cargar vehículos', 'Cerrar', { duration: 3000 })
+        error: () =>
+          this.snackBar.open('Error al cargar vehículos', 'Cerrar', {
+            duration: 3000,
+          }),
       });
   }
 
@@ -68,7 +72,7 @@ snackBar = inject(MatSnackBar);
     this.dataSource.filter = this.filterValue.trim().toLowerCase();
   }
 
-   goToCreate(): void {
+  goToCreate(): void {
     this.router.navigate(['/admin/create-vehicle']);
   }
 
@@ -78,17 +82,37 @@ snackBar = inject(MatSnackBar);
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`${environment.apiBaseUrl}/vehicles/${id}`, { headers })
+    this.http
+      .delete(`${environment.apiBaseUrl}/vehicles/${id}`, { headers })
       .subscribe({
         next: () => {
-          this.snackBar.open('Vehículo eliminado', 'Cerrar', { duration: 3000 });
+          this.snackBar.open('Vehículo eliminado', 'Cerrar', {
+            duration: 3000,
+          });
           this.fetchVehicles();
         },
-        error: () => this.snackBar.open('Error al eliminar', 'Cerrar', { duration: 3000 })
+        error: () =>
+          this.snackBar.open('Error al eliminar', 'Cerrar', { duration: 3000 }),
       });
   }
 
   goToEdit(id: number): void {
     this.router.navigate(['/admin/edit-vehicle', id]);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toggleAvailability(vehicle: any): void {
+    const newStatus = !vehicle.available;
+    this.http
+      .patch(`/api/v1/vehicles/${vehicle.id}/availability`, null, {
+        params: { available: newStatus },
+      })
+      .subscribe(() => {
+        vehicle.available = newStatus;
+        this.snackBar.open(
+          `Vehículo ${newStatus ? 'activado' : 'desactivado'}`,
+          'Cerrar',
+          { duration: 3000 }
+        );
+      });
   }
 }

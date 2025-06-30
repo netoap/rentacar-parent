@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/api/v1/customers")
 public class CustomerController {
 
     private final CreateCustomerUseCase createCustomerUseCase;
@@ -27,14 +27,17 @@ public class CustomerController {
     private final UpdateCustomerUseCase updateCustomerUseCase;
     private final DeleteCustomerUseCase deleteCustomerUseCase;
     private final ModelMapperConfig modelMapper;
+    private final GetCustomerByEmailQuery getCustomerByEmailQuery;
 
-    public CustomerController(CreateCustomerUseCase createCustomerUseCase, GetAllCustomersQuery getAllCustomersQuery, GetCustomerByIdQuery getCustomerByIdQuery, UpdateCustomerUseCase updateCustomerUseCase, DeleteCustomerUseCase deleteCustomerUseCase, ModelMapperConfig modelMapper) {
+
+    public CustomerController(CreateCustomerUseCase createCustomerUseCase, GetAllCustomersQuery getAllCustomersQuery, GetCustomerByIdQuery getCustomerByIdQuery, UpdateCustomerUseCase updateCustomerUseCase, DeleteCustomerUseCase deleteCustomerUseCase, ModelMapperConfig modelMapper, GetCustomerByEmailQuery getCustomerByEmailQuery) {
         this.createCustomerUseCase = createCustomerUseCase;
         this.getAllCustomersQuery = getAllCustomersQuery;
         this.getCustomerByIdQuery = getCustomerByIdQuery;
         this.updateCustomerUseCase = updateCustomerUseCase;
         this.deleteCustomerUseCase = deleteCustomerUseCase;
         this.modelMapper = modelMapper;
+        this.getCustomerByEmailQuery = getCustomerByEmailQuery;
     }
 
     @PostMapping
@@ -59,6 +62,15 @@ public class CustomerController {
         CustomerResponse response = modelMapper.toCustomerResponse(customer);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<CustomerResponse> getCustomerByEmail(@PathVariable String email) {
+        Customer customer = getCustomerByEmailQuery.getByEmail(email);
+        CustomerResponse response = modelMapper.toCustomerResponse(customer);
+        return ResponseEntity.ok(response);
+    }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<CustomerResponse> updateCustomer(

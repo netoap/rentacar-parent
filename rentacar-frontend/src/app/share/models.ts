@@ -2,10 +2,12 @@ export interface Reservation {
   id: number;
   customerId: string;
   carId: number;
+  vehicleModel: string; // nuevo campo
   startDate: string;
   endDate: string;
   status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
 }
+
 
 
 export interface Vehicle {

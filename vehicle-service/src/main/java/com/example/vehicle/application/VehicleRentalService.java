@@ -1,6 +1,6 @@
 package com.example.vehicle.application;
 
-import com.example.vehicle.adapters.outbound.client.dto.CustomerResponse;
+import com.example.vehicle.adapters.out.client.dto.CustomerResponse;
 import com.example.vehicle.domain.Vehicle;
 import com.example.vehicle.domain.event.VehicleRentedEvent;
 import com.example.vehicle.domain.event.VehicleReturnedEvent;

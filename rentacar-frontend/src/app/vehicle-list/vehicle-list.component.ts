@@ -6,13 +6,14 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-vehicle-list',
   standalone: true,
   templateUrl: './vehicle-list.component.html',
   styleUrls: ['./vehicle-list.component.scss'],
-  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule]
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule],
 })
 export class VehicleListComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -20,10 +21,11 @@ export class VehicleListComponent implements OnInit {
 
   loading = true;
   vehiclesByCategory = new Map<string, any[]>();
-  lastSearchParams: { location?: string; start: string; end: string } | null = null;
+  lastSearchParams: { location?: string; start: string; end: string } | null =
+    null;
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const { location, start, end } = params;
 
       if (!location || !start || !end) {
@@ -32,8 +34,8 @@ export class VehicleListComponent implements OnInit {
         return;
       }
 
-    this.lastSearchParams = { location, start, end };
-    this.fetchAvailableVehicles(location, start, end);
+      this.lastSearchParams = { location, start, end };
+      this.fetchAvailableVehicles(location, start, end);
     });
   }
 
@@ -49,12 +51,10 @@ export class VehicleListComponent implements OnInit {
     }
   }
 
-  private fetchAvailableVehicles(location: string, start: string, end: string): void {
-    const apiUrl =
-      `/api/v1/vehicles/available?from=${start}&to=${end}` +
-      (location ? `&location=${encodeURIComponent(location)}` : '');
+  private fetchAvailableVehicles( location: string, start: string, end: string ): void {
+    const url = `${environment.apiBaseUrl}/vehicles/available?from=${start}&to=${end}&location=${encodeURIComponent(location)}`;
 
-    this.http.get<any[]>(apiUrl).subscribe({
+    this.http.get<any[]>(url).subscribe({
       next: (data) => {
         this.vehiclesByCategory = this.groupByCategory(data);
         this.loading = false;
@@ -62,7 +62,7 @@ export class VehicleListComponent implements OnInit {
       error: () => {
         this.vehiclesByCategory.clear();
         this.loading = false;
-      }
+      },
     });
   }
 

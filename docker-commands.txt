@@ -1,0 +1,23 @@
+
+# 🚀 COMANDOS DOCKER PARA VEHICLE-SERVICE
+
+# 1. Construir la imagen del microservicio (debe estar en la raíz del proyecto con Dockerfile)
+docker build -t vehicle-service ./vehicle-service
+
+# 2. Ejecutar solo el contenedor (requiere que PostgreSQL esté corriendo por separado)
+docker run -p 8083:8083 --name vehicle-service vehicle-service
+
+# 3. Levantar con docker-compose (usa docker-compose.override.yml y docker-compose.yml)
+docker compose up --build -d
+
+# 4. Ver logs del servicio
+docker logs -f vehicle-service
+
+# 5. Detener los contenedores
+docker compose down
+
+# 6. Acceder a pgAdmin (si está en el stack)
+# http://localhost:8081
+
+# 7. Acceder a Swagger UI del microservicio (si configurado)
+# http://localhost:8083/api/v1/swagger-ui.html

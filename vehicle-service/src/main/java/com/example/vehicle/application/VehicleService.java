@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,GetAllVehiclesQuery,GetAvailableVehiclesQuery, UpdateVehicleUseCase, DeleteVehicleUseCase {
+public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,GetAllVehiclesQuery,GetAvailableVehiclesQuery, UpdateVehicleUseCase, DeleteVehicleUseCase  {
 
     private final VehicleRepositoryPort vehicleRepositoryPort;
 
@@ -41,7 +41,6 @@ public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,Ge
                 .map(VehicleResponse::fromDomain)
                 .orElseThrow(() -> new VehicleNotFoundException(id));
     }
-
     @Override
     public List<VehicleResponse> getAll() {
         return vehicleRepositoryPort.findAll().stream()
@@ -63,4 +62,12 @@ public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,Ge
     public void delete(Long id) {
         vehicleRepositoryPort.deleteById(id);
     }
+    @Override
+    public void updateAvailability(Long id, boolean available) {
+        Vehicle vehicle = vehicleRepositoryPort.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException(id));
+        vehicle.setAvailable(available);
+        vehicleRepositoryPort.save(vehicle);
+    }
+
 }

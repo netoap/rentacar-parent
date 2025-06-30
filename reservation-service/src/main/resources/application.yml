@@ -13,3 +13,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   profiles:
     active: dev
+jwt:
+  secret: "hjd7f$#3ajLz9XPp!3qVmUc@V7gXkPgZ23mZn8wQ9tPfLs#4Nk"
+  expiration-ms: 86400000  # 24h

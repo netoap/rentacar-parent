@@ -14,3 +14,18 @@ h2 {
   font-weight: 600;
   color: #444;
 }
+mat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  min-height: 200px;
+}
+button {
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #1976d2;
+  color: white;
+}

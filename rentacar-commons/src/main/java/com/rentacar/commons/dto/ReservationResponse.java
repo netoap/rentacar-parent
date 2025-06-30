@@ -22,15 +22,20 @@ public class ReservationResponse {
     @Schema(description = "Reservation end date", example = "2025-06-15")
     private LocalDate endDate;
 
+    private String vehicleModel;
+
     public ReservationResponse() {}
 
-    public ReservationResponse(Long id, String customerEmail, Long vehicleId, LocalDate startDate, LocalDate endDate) {
+    public ReservationResponse(Long id, String customerEmail, Long carId, String vehicleModel,
+                               LocalDate startDate, LocalDate endDate) {
         this.id = id;
         this.customerEmail = customerEmail;
-        this.vehicleId = vehicleId;
+        this.vehicleId = carId;
+        this.vehicleModel = vehicleModel;
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
 
     public Long getId() {
         return id;
@@ -70,5 +75,13 @@ public class ReservationResponse {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public String getVehicleModel() {
+        return vehicleModel;
+    }
+
+    public void setVehicleModel(String vehicleModel) {
+        this.vehicleModel = vehicleModel;
     }
 }

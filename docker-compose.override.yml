@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  vehicle-service:
+    build:
+      context: ./vehicle-service
+    container_name: vehicle-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rentacar_vehicle
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update

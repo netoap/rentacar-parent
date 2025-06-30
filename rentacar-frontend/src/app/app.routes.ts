@@ -29,6 +29,12 @@ export const routes: Routes = [
 
   // 👤 User area
   {
+  path: 'vehicles',
+  loadComponent: () =>
+    import('./vehicle-list/vehicle-list.component').then(m => m.VehicleListComponent)
+}
+,
+  {
     path: ROUTES_PATH.DASHBOARD,
     component: UserLayoutComponent,
     canActivate: [authGuard],

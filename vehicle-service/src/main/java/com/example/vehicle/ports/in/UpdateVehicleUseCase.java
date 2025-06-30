@@ -5,4 +5,5 @@ import com.example.vehicle.adapters.in.rest.dto.VehicleResponse;
 
 public interface UpdateVehicleUseCase {
     VehicleResponse update(Long id, UpdateVehicleRequest request);
+    void updateAvailability(Long id, boolean available);
 }

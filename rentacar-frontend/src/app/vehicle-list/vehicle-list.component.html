@@ -3,26 +3,50 @@
 </ng-container>
 
 <ng-container *ngIf="!loading && vehiclesByCategory.size === 0">
-  <p><strong>No hay vehículos disponibles en las fechas seleccionadas.</strong></p>
-  <button mat-stroked-button color="primary" (click)="retry()">Reintentar búsqueda</button>
+  <p>
+    <strong>No hay vehículos disponibles en las fechas seleccionadas.</strong>
+  </p>
+  <button mat-stroked-button color="primary" (click)="retry()">
+    Reintentar búsqueda
+  </button>
 </ng-container>
 
 <ng-container *ngIf="!loading && vehiclesByCategory.size > 0">
   <div *ngFor="let category of vehiclesByCategory.keys()">
     <h2>{{ category }}</h2>
     <div class="vehicle-grid">
-      <mat-card *ngFor="let car of vehiclesByCategory.get(category)" class="vehicle-card">
+      <mat-card
+        *ngFor="let car of vehiclesByCategory.get(category)"
+        class="vehicle-card"
+      >
         <mat-card-title>{{ car.model }}</mat-card-title>
         <mat-card-content>
           <p>Año: {{ car.year }}</p>
           <p>Precio por día: {{ car.price | currency }}</p>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-raised-button color="primary" [routerLink]="['/reserve', car.id]">
+          <button
+            mat-raised-button
+            color="primary"
+            [routerLink]="['/dashboard/reserve', car.id]"
+            [queryParams]="{
+              start: lastSearchParams?.start,
+              end: lastSearchParams?.end,
+              location: lastSearchParams?.location
+            }"
+          >
             Reservar
           </button>
         </mat-card-actions>
       </mat-card>
     </div>
   </div>
+</ng-container>
+<ng-container *ngIf="!loading && !lastSearchParams">
+  <p>
+    <strong
+      >Completa el formulario de búsqueda para ver vehículos
+      disponibles.</strong
+    >
+  </p>
 </ng-container>

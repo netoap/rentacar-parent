@@ -1,49 +1,40 @@
-<form [formGroup]="reservationForm" (ngSubmit)="submit()" class="form-container">
-  <!-- Location -->
-  <mat-form-field appearance="fill">
-    <mat-label>Location</mat-label>
-    <input matInput formControlName="location">
-    <mat-error *ngIf="reservationForm.get('location')?.hasError('required')">
-      Location is required
-    </mat-error>
-  </mat-form-field>
+<mat-card>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+  
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Localización</mat-label>
+      <input matInput formControlName="location" readonly />
+    </mat-form-field>
 
-  <!-- Start Date -->
-  <mat-form-field appearance="fill">
-    <mat-label>Start Date</mat-label>
-    <input matInput [min]="today" [matDatepicker]="startPicker" formControlName="startDate">
-    <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-    <mat-datepicker #startPicker></mat-datepicker>
-    <mat-error *ngIf="reservationForm.get('startDate')?.hasError('required')">
-      Start date is required
-    </mat-error>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Fecha inicio</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker1"
+        formControlName="startDate"
+        required
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
 
-  <!-- End Date -->
-  <mat-form-field appearance="fill">
-    <mat-label>End Date</mat-label>
-    <input matInput [min]="today" [matDatepicker]="endPicker" formControlName="endDate">
-    <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-    <mat-datepicker #endPicker></mat-datepicker>
-    <mat-error *ngIf="reservationForm.get('endDate')?.hasError('required')">
-      End date is required
-    </mat-error>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Fecha fin</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker2"
+        formControlName="endDate"
+        required
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Modelo del vehículo</mat-label>
+  <input matInput formControlName="vehicleModel" readonly />
+</mat-form-field>
 
-  <!-- Vehicle -->
-  <mat-form-field appearance="fill">
-    <mat-label>Select Vehicle</mat-label>
-    <mat-select formControlName="vehicleId">
-      <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">
-        {{ vehicle.model }} ({{ vehicle.year }})
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="reservationForm.get('vehicleId')?.hasError('required')">
-      Please select a vehicle
-    </mat-error>
-  </mat-form-field>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="reservationForm.invalid">
-    Reserve
-  </button>
-</form>
+    <button mat-raised-button color="primary" type="submit">Reservar</button>
+  </form>
+</mat-card>

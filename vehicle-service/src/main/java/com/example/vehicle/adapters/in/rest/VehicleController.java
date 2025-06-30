@@ -48,6 +48,7 @@ public class VehicleController {
         this.getVehicleAvailabilityUseCase = getVehicleAvailabilityUseCase;
     }
 
+
     @PostMapping
     @Operation(summary = "Create a new vehicle")
     public ResponseEntity<VehicleResponse> create(@RequestBody CreateVehicleRequest request) {
@@ -66,11 +67,42 @@ public class VehicleController {
         return ResponseEntity.ok(getVehicleByIdQuery.getById(id));
     }
 
-    @GetMapping
-    @Operation(summary = "Get all vehicles")
-    public ResponseEntity<List<VehicleResponse>> getAllVehicles() {
-        return ResponseEntity.ok(getAllVehiclesQuery.getAll());
+    @GetMapping("/{id}/model")
+    @Operation(summary = "Get only the model of a vehicle by ID")
+    public ResponseEntity<String> getVehicleModelById(@PathVariable Long id) {
+        return ResponseEntity.ok(getVehicleByIdQuery.getById(id).getModel());
     }
+    @GetMapping("/search")
+    @Operation(summary = "Buscar vehículos por modelo")
+    public ResponseEntity<List<VehicleResponse>> searchByModel(@RequestParam String model) {
+        List<VehicleResponse> results = getAllVehiclesQuery.getAll().stream()
+                .filter(v -> v.getModel().toLowerCase().contains(model.toLowerCase()))
+                .toList();
+        return ResponseEntity.ok(results);
+    }
+    @PatchMapping("/{id}/availability")
+    @Operation(summary = "Cambiar disponibilidad del vehículo")
+    public ResponseEntity<Void> toggleAvailability(@PathVariable Long id, @RequestParam boolean available) {
+        updateVehicleUseCase.updateAvailability(id, available);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping
+    @Operation(summary = "Listar vehículos paginados")
+    public ResponseEntity<List<VehicleResponse>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        List<VehicleResponse> all = getAllVehiclesQuery.getAll();
+        int from = Math.min(page * size, all.size());
+        int to = Math.min(from + size, all.size());
+
+        return ResponseEntity.ok(all.subList(from, to));
+    }
+
+
+
 
     @PutMapping("/{id}")
     @Operation(summary = "Update vehicle by ID")
