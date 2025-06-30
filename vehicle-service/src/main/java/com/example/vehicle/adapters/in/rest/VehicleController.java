@@ -69,7 +69,7 @@ public class VehicleController {
 
     @GetMapping("/{id}/model")
     @Operation(summary = "Get only the model of a vehicle by ID")
-    public ResponseEntity<String> getVehicleModelById(@PathVariable Long id) {
+    public ResponseEntity<String> getVehicleModelById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(getVehicleByIdQuery.getById(id).getModel());
     }
     @GetMapping("/search")

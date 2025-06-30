@@ -1,6 +1,6 @@
 package com.example.vehicle.application;
 
-import com.example.vehicle.adapters.out.client.dto.CustomerResponse;
+
 import com.example.vehicle.domain.Vehicle;
 import com.example.vehicle.domain.event.VehicleRentedEvent;
 import com.example.vehicle.domain.event.VehicleReturnedEvent;
@@ -11,6 +11,7 @@ import com.example.vehicle.ports.in.ReturnVehicleUseCase;
 import com.example.vehicle.ports.out.CreateReservationPort;
 import com.example.vehicle.ports.out.LoadCustomerPort;
 import com.example.vehicle.ports.out.VehicleRepositoryPort;
+import com.rentacar.commons.dto.CustomerResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
