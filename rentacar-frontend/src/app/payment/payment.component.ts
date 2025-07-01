@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable */
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -18,12 +19,11 @@ import { CommonModule } from '@angular/common';
 export class PaymentComponent implements OnInit {
   reservations: any[] = [];
   email: string = '';
+  private http= inject(HttpClient);
+  private route= inject(ActivatedRoute);
+  private router= inject(Router);
 
-  constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  
 
   ngOnInit(): void {
   this.route.queryParams.subscribe(params => {
