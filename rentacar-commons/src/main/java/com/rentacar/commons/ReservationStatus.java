@@ -1,4 +1,4 @@
-package com.example.reservation.adapters.out.jpa.entity;
+package com.rentacar.commons;
 
 public enum ReservationStatus {
     CONFIRMED,

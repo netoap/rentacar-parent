@@ -1,5 +1,6 @@
 package com.rentacar.commons.dto;
 
+import com.rentacar.commons.ReservationStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -24,53 +25,44 @@ public class ReservationResponse {
 
     private String vehicleModel;
 
+    private ReservationStatus status;
+
     public ReservationResponse() {}
-
-    public ReservationResponse(Long id, String customerEmail, Long carId, String vehicleModel,
-                               LocalDate startDate, LocalDate endDate) {
-        this.id = id;
-        this.customerEmail = customerEmail;
-        this.vehicleId = carId;
-        this.vehicleModel = vehicleModel;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
 
     public Long getId() {
         return id;
-    }
-
-    public String getCustomerEmail() {
-        return customerEmail;
-    }
-
-    public Long getVehicleId() {
-        return vehicleId;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
     public void setCustomerEmail(String customerEmail) {
         this.customerEmail = customerEmail;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
     }
 
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
@@ -83,5 +75,13 @@ public class ReservationResponse {
 
     public void setVehicleModel(String vehicleModel) {
         this.vehicleModel = vehicleModel;
+    }
+
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
     }
 }

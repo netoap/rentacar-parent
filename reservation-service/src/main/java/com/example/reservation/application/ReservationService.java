@@ -1,12 +1,13 @@
 package com.example.reservation.application;
 
-import com.example.reservation.adapters.out.jpa.entity.ReservationStatus;
+
+import com.example.reservation.adapters.out.jpa.JpaReservationMapper;
 import com.example.reservation.domain.Reservation;
-import com.example.reservation.ports.in.CancelReservationUseCase;
-import com.example.reservation.ports.in.CreateReservationUseCase;
-import com.example.reservation.ports.in.GetReservationsQuery;
-import com.example.reservation.ports.in.GetVehicleAvailabilityUseCase;
-import com.example.reservation.ports.out.ReservationRepositoryPort;
+import com.example.reservation.domain.exception.ReservationNotFoundException;
+import com.example.reservation.ports.in.*;
+import com.example.reservation.ports.out.ReservationPort;
+import com.rentacar.commons.ReservationStatus;
+import com.rentacar.commons.dto.ReservationResponse;
 import com.rentacar.commons.dto.VehicleAvailabilityResponse;
 
 import java.time.LocalDate;
@@ -17,39 +18,53 @@ import java.util.stream.Collectors;
 
 public class ReservationService implements
         CreateReservationUseCase,
-        GetReservationsQuery,
+        GetReservationsUseCase,
         GetVehicleAvailabilityUseCase,
-        CancelReservationUseCase {
-    private final ReservationRepositoryPort reservationRepository;
+        CancelReservationUseCase, UpdateReservationUseCase {
+    private final ReservationPort reservationPort;
 
-    public ReservationService(ReservationRepositoryPort reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationService(ReservationPort reservationRepository) {
+        this.reservationPort = reservationRepository;
     }
 
     @Override
     public Reservation createReservation(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate) {
-        boolean notAvailable = reservationRepository.isOverlappingReservation(carId, endDate, startDate);
-        if (notAvailable) {
-            throw new IllegalStateException("El vehículo ya está reservado en esas fechas.");
-        }
-        Reservation reservation = new Reservation(customerEmail, carId, startDate, endDate, ReservationStatus.CONFIRMED);
-        return reservationRepository.save(reservation);
+//        boolean notAvailable = reservationRepository.isOverlappingReservation(carId, endDate, startDate);
+//        if (notAvailable) {
+//            throw new IllegalStateException("El vehículo ya está reservado en esas fechas.");
+//        }
+        Reservation reservation = new Reservation(customerEmail, carId, startDate, endDate, ReservationStatus.PENDING);
+        return reservationPort.save(reservation);
+    }
+
+    @Override
+    public void markAsPaid(Long id) {
+        Reservation reservation = reservationPort.findById(id);
+        reservation.setStatus(ReservationStatus.CONFIRMED);
+        reservationPort.save(reservation);
+    }
+
+    @Override
+    public List<ReservationResponse> findReservationsByEmailAndStatus(String email, ReservationStatus status) {
+        List<Reservation> reservation = reservationPort.findByCustomerEmailAndStatus(email, ReservationStatus.PENDING.toString());
+        return reservation.stream()
+                .map(JpaReservationMapper::toResponse).toList();
     }
 
 
     @Override
     public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+        return reservationPort.findAll();
     }
 
     @Override
     public List<Reservation> getByCustomerEmail(String email) {
-        return reservationRepository.findByCustomerEmail(email);
+        return reservationPort.findByCustomerEmail(email);
     }
 
     @Override
     public Reservation getById(Long id) {
-        Reservation reservation = reservationRepository.findById(id);
+        Reservation reservation = reservationPort.findById(id);
         if (reservation == null) {
             throw new IllegalArgumentException("Reservation not found with ID: " + id);
         }
@@ -57,9 +72,11 @@ public class ReservationService implements
     }
 
 
+
+
     @Override
     public VehicleAvailabilityResponse getVehicleAvailability(Long vehicleId, LocalDate from, LocalDate to) {
-        List<Reservation> reservations = reservationRepository.findByVehicleIdAndDateRange(vehicleId, from, to);
+        List<Reservation> reservations = reservationPort.findByVehicleIdAndDateRange(vehicleId, from, to);
 
         Set<LocalDate> booked = new HashSet<>();
         for (Reservation r : reservations) {
@@ -77,18 +94,19 @@ public class ReservationService implements
 
     @Override
     public boolean isVehicleUnavailable(Long vehicleId, LocalDate start, LocalDate end) {
-        return reservationRepository.isOverlappingReservation(vehicleId, end, start);
+        return reservationPort.isOverlappingReservation(vehicleId, end, start);
 
     }
 
     @Override
     public void cancel(Long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId);
+        Reservation reservation = reservationPort.findById(reservationId);
         if (reservation.getStatus() == ReservationStatus.CANCELLED) {
             throw new IllegalStateException("Reservation is already cancelled.");
         }
         reservation.setStatus(ReservationStatus.CANCELLED);
-        reservationRepository.save(reservation);
+        reservationPort.save(reservation);
     }
+
 
 }

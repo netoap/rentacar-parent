@@ -1,11 +1,9 @@
 package com.example.reservation.adapters.in.rest;
 
-import com.example.reservation.adapters.out.jpa.entity.ReservationStatus;
+import com.example.reservation.adapters.out.jpa.JpaReservationMapper;
 import com.example.reservation.domain.Reservation;
-import com.example.reservation.ports.in.CancelReservationUseCase;
-import com.example.reservation.ports.in.CreateReservationUseCase;
-import com.example.reservation.ports.in.GetReservationsQuery;
-import com.example.reservation.ports.in.GetVehicleAvailabilityUseCase;
+import com.example.reservation.ports.in.*;
+import com.rentacar.commons.ReservationStatus;
 import com.rentacar.commons.dto.CreateReservationRequest;
 import com.rentacar.commons.dto.ReservationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,70 +27,63 @@ import com.example.reservation.adapters.out.feign.VehicleClient;
 @RequestMapping("/api/v1/reservations")
 @Validated
 public class ReservationController {
-    private final CreateReservationUseCase reservationUseCase;
-    private final GetReservationsQuery getReservationsQuery;
+    private final CreateReservationUseCase createReservationUseCase;
+    private final GetReservationsUseCase getReservationsUseCase;
     private final CancelReservationUseCase cancelReservationUseCase;
     private final VehicleClient vehicleClient;
     private final GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase;
+    private final UpdateReservationUseCase updateReservationUseCase;
 
-    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsQuery getReservationsQuery, CancelReservationUseCase cancelReservationUseCase, VehicleClient vehicleClient, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase) {
-        this.reservationUseCase = reservationUseCase;
-        this.getReservationsQuery = getReservationsQuery;
+    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsUseCase getReservationsUseCase, CancelReservationUseCase cancelReservationUseCase, VehicleClient vehicleClient, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase, UpdateReservationUseCase updateReservationUseCase) {
+        this.createReservationUseCase = reservationUseCase;
+        this.getReservationsUseCase = getReservationsUseCase;
         this.cancelReservationUseCase = cancelReservationUseCase;
         this.vehicleClient = vehicleClient;
         this.getVehicleAvailabilityUseCase = getVehicleAvailabilityUseCase;
+        this.updateReservationUseCase = updateReservationUseCase;
     }
 
     @PostMapping
     @Operation(summary = "Create a new reservation")
     public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody CreateReservationRequest request) {
 
-        Reservation reservation = reservationUseCase.createReservation(
+        Reservation reservation = createReservationUseCase.createReservation(
                 request.getCustomerEmail(),
                 request.getVehicleId(),
                 request.getStartDate(),
                 request.getEndDate()
         );
-        vehicleClient.updateAvailability(request.getVehicleId(), false);
-        String model = vehicleClient.getVehicleModelById(request.getVehicleId());
-        return new ResponseEntity<>(
-                new ReservationResponse(
-                        reservation.getId(),
-                        reservation.getCustomerEmail(),
-                        reservation.getCarId(),
-                        model,
-                        reservation.getStartDate(),
-                        reservation.getEndDate()
-                ),
-                HttpStatus.CREATED
-        );
+
+        ReservationResponse reservationResponse = new ReservationResponse();
+        return new ResponseEntity<>(JpaReservationMapper.toResponse(reservation), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/pending")
+    public List<ReservationResponse> pendingReservations(
+            @RequestParam String email) {
+        return getReservationsUseCase.findReservationsByEmailAndStatus(email, ReservationStatus.PENDING);
+    }
+
+    @PutMapping("/{id}/paid")
+    public ResponseEntity<Void> markAsPaid(@PathVariable("id") Long id) {
+        updateReservationUseCase.markAsPaid(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
     @Operation(summary = "Get all reservations")
     public ResponseEntity<List<ReservationResponse>> getAllReservations() {
-        List<ReservationResponse> responses = getReservationsQuery.getAllReservations().stream()
-                .map(r -> {
-                    String model = vehicleClient.getVehicleModelById(r.getCarId());
-                    return new ReservationResponse(
-                            r.getId(),
-                            r.getCustomerEmail(),
-                            r.getCarId(),
-                            model,
-                            r.getStartDate(),
-                            r.getEndDate()
-                    );
-                })
+        List<ReservationResponse> responses = getReservationsUseCase.getAllReservations().stream()
+                .map(JpaReservationMapper::toResponse)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(responses);
     }
 
-
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
         cancelReservationUseCase.cancel(id); // sets status to CANCELLED
-        Reservation reservation = getReservationsQuery.getById(id);
+        Reservation reservation = getReservationsUseCase.getById(id);
         vehicleClient.updateAvailability(reservation.getCarId(), true);
         return ResponseEntity.noContent().build();
     }
@@ -106,20 +97,10 @@ public class ReservationController {
     )
     public ResponseEntity<List<ReservationResponse>> getMyReservations() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Reservation> reservations = getReservationsQuery.getByCustomerEmail(email);
+        List<Reservation> reservations = getReservationsUseCase.getByCustomerEmail(email);
 
         List<ReservationResponse> response = reservations.stream()
-                .map(r -> {
-                    String model = vehicleClient.getVehicleModelById(r.getCarId());
-                    return new ReservationResponse(
-                            r.getId(),
-                            r.getCustomerEmail(),
-                            r.getCarId(),
-                            model,
-                            r.getStartDate(),
-                            r.getEndDate()
-                    );
-                })
+                .map(JpaReservationMapper::toResponse)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(response);

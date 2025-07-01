@@ -2,7 +2,7 @@ package com.example.reservation;
 
 import com.example.reservation.application.ReservationService;
 import com.example.reservation.ports.in.CreateReservationUseCase;
-import com.example.reservation.ports.out.ReservationRepositoryPort;
+import com.example.reservation.ports.out.ReservationPort;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -16,7 +16,7 @@ public class ReservationServiceApplication {
     }
 
     @Bean
-    public CreateReservationUseCase createReservationUseCase(ReservationRepositoryPort reservationRepository) {
+    public CreateReservationUseCase createReservationUseCase(ReservationPort reservationRepository) {
         return new ReservationService(reservationRepository);
     }
 }

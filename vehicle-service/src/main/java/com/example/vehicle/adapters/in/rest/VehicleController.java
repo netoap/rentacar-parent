@@ -61,6 +61,13 @@ public class VehicleController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/{id}/availability")
+    @Operation(summary = "Cambiar disponibilidad del vehículo")
+    public ResponseEntity<Void> toggleAvailability(@PathVariable Long id, @RequestParam boolean available) {
+        updateVehicleUseCase.updateAvailability(id, available);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PostMapping
     @Operation(summary = "Create a new vehicle")
@@ -109,12 +116,7 @@ public class VehicleController {
                 .toList();
         return ResponseEntity.ok(results);
     }
-    @PatchMapping("/{id}/availability")
-    @Operation(summary = "Cambiar disponibilidad del vehículo")
-    public ResponseEntity<Void> toggleAvailability(@PathVariable Long id, @RequestParam boolean available) {
-        updateVehicleUseCase.updateAvailability(id, available);
-        return ResponseEntity.noContent().build();
-    }
+
 
 
     @GetMapping
@@ -173,7 +175,4 @@ public class VehicleController {
         VehicleAvailabilityResponse response = getVehicleAvailabilityUseCase.getVehicleAvailability(vehicleId, fromDate, toDate);
         return ResponseEntity.ok(response);
     }
-
-
-
 }

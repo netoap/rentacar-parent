@@ -25,6 +25,21 @@ public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,Ge
     }
 
     @Override
+    public List<VehicleResponse> getAvailableVehicles() {
+        return vehicleRepositoryPort.findAvailableVehicles().stream()
+                .map(VehicleResponse::fromDomain)
+                .toList();
+    }
+
+    @Override
+    public void updateAvailability(Long id, boolean available) {
+        Vehicle vehicle = vehicleRepositoryPort.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException(id));
+        vehicle.setAvailable(available);
+        vehicleRepositoryPort.save(vehicle);
+    }
+
+    @Override
     public VehicleResponse addVehicle(CreateVehicleRequest request) {
         Vehicle vehicle = Vehicle.builder()
                 .model(request.getModel())
@@ -37,12 +52,7 @@ public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,Ge
         return VehicleResponse.fromDomain(vehicle);
     }
 
-    @Override
-    public List<VehicleResponse> getAvailableVehicles() {
-        return vehicleRepositoryPort.findAvailableVehicles().stream()
-                .map(VehicleResponse::fromDomain)
-                .toList();
-    }
+
 
     @Override
     public List<VehicleResponse> getAvailableVehicles(LocalDate start, LocalDate end) {
@@ -90,12 +100,6 @@ public class VehicleService implements AddVehicleUseCase, GetVehicleByIdQuery,Ge
     public void delete(Long id) {
         vehicleRepositoryPort.deleteById(id);
     }
-    @Override
-    public void updateAvailability(Long id, boolean available) {
-        Vehicle vehicle = vehicleRepositoryPort.findById(id)
-                .orElseThrow(() -> new VehicleNotFoundException(id));
-        vehicle.setAvailable(available);
-        vehicleRepositoryPort.save(vehicle);
-    }
+
 
 }

@@ -13,9 +13,9 @@ spring:
       ddl-auto: update
     show-sql: true
 
-reservation:
-  service:
-    url: http://localhost:8082
+reservation-client:
+  ribbon:
+    listOfServers: http://localhost:8082
 
 feign:
   client:

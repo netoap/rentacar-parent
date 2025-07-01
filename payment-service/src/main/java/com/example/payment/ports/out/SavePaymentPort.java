@@ -1,7 +1,7 @@
 package com.example.payment.ports.out;
 
-import com.example.payment.domain.PaymentEntity;
+import com.example.payment.adapters.out.jpa.Payment;
 
 public interface SavePaymentPort {
-    PaymentEntity save(PaymentEntity payment);
+    void save(Payment payment);
 }

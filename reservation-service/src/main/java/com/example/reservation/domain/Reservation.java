@@ -1,6 +1,7 @@
 package com.example.reservation.domain;
 
-import com.example.reservation.adapters.out.jpa.entity.ReservationStatus;
+
+import com.rentacar.commons.ReservationStatus;
 
 import java.time.LocalDate;
 
@@ -12,13 +13,7 @@ public class Reservation {
     private LocalDate endDate;
     private ReservationStatus status;
 
-    public Reservation(Long id, String customerEmail, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
-        this.id = id;
-        this.customerEmail = customerEmail;
-        this.carId = carId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.status = status;
+    public Reservation() {
     }
 
     public Reservation(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
