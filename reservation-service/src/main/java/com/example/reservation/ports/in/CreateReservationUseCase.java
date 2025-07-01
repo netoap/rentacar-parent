@@ -5,5 +5,5 @@ import com.example.reservation.domain.Reservation;
 import java.time.LocalDate;
 
 public interface CreateReservationUseCase {
-    Reservation createReservation(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate);
+    Reservation createReservation(String vehicleModel, String email, String customerName, Long carId, LocalDate startDate, LocalDate endDate);
 }

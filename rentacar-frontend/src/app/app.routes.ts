@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 import { authGuard } from './auth/auth-guard';
 import { GuestGuard } from './auth/guest-guard';
 import { roleGuard } from './auth/role.guard';
+import { redirectGuard } from './auth/redirect.guard';
 import { AdminLayoutComponent } from './admin/layout/admin-layout/admin-layout.component';
 import { UserLayoutComponent } from './dashboard/layout/user-layout/user-layout.component';
 import { ROLES } from './auth/roles';
-import { redirectGuard } from './auth/redirect.guard'; // 👈 nuevo guard
 
 export const routes: Routes = [
-  // 🔁 Redirección raíz inteligente
+  // 🏠 Redirección raíz
   {
     path: '',
     canActivate: [redirectGuard],
@@ -16,41 +16,33 @@ export const routes: Routes = [
       import('./redirect-page').then((m) => m.RedirectPageComponent),
   },
 
-  // 🌐 Pública (opcional)
+  // 🌐 Públicas
   {
     path: 'home',
     loadComponent: () =>
       import('./landing/landing.component').then((m) => m.LandingComponent),
   },
-
   {
     path: 'login',
+    canActivate: [GuestGuard],
     loadComponent: () =>
       import('./login/login.component').then((m) => m.LoginComponent),
-    canActivate: [GuestGuard],
   },
   {
     path: 'register',
+    canActivate: [GuestGuard],
     loadComponent: () =>
       import('./register/register.component').then((m) => m.RegisterComponent),
-    canActivate: [GuestGuard],
   },
   {
-  path: 'vehicles',
-  loadComponent: () =>
-    import('./vehicle/available-vehicles/available-vehicles.component').then(
-      (m) => m.AvailableVehiclesComponent
-    ),
-},
-
-  // 👤 Área usuario
- /* {
-    path: 'vehicles',
+    path: 'vehicles', // pública
     loadComponent: () =>
-      import('./vehicle-list/vehicle-list.component').then(
-        (m) => m.VehicleListComponent
+      import('./vehicle/available-vehicles/available-vehicles.component').then(
+        (m) => m.AvailableVehiclesComponent
       ),
-  },*/
+  },
+
+  // 👤 Área usuario (dashboard)
   {
     path: 'dashboard',
     component: UserLayoutComponent,
@@ -59,45 +51,31 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent
-          ),
-      },
-      {
-        path: 'vehicles',
-        loadComponent: () =>
-          import('./vehicle-list/vehicle-list.component').then(
-            (m) => m.VehicleListComponent
-          ),
+          import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
       {
         path: 'reserve/:vehicleId',
         loadComponent: () =>
-          import('./reservation-form/reservation-form.component').then(
-            (m) => m.ReservationFormComponent
-          ),
+          import('./reservation-form/reservation-form.component').then((m) => m.ReservationFormComponent),
       },
       {
         path: 'payment',
         loadComponent: () =>
-          import('./payment/payment.component').then(
-            (m) => m.PaymentComponent 
-          ),
+          import('./payment/payment.component').then((m) => m.PaymentComponent),
       },
-
       {
         path: 'my-reservations',
         loadComponent: () =>
-          import(
-            './reservation/my-reservations/my-reservations.component'
-          ).then((m) => m.MyReservationsComponent),
+          import('./reservation/my-reservations/my-reservations.component').then(
+            (m) => m.MyReservationsComponent
+          ),
       },
       {
         path: 'reservation-summary',
         loadComponent: () =>
-          import(
-            './reservation/reservation-summary/reservation-summary.component'
-          ).then((m) => m.ReservationSummaryComponent),
+          import('./reservation/reservation-summary/reservation-summary.component').then(
+            (m) => m.ReservationSummaryComponent
+          ),
       },
       {
         path: 'vehicles/:vehicleId/calendar',
@@ -152,21 +130,14 @@ export const routes: Routes = [
       {
         path: 'admin-reservations',
         loadComponent: () =>
-          import(
-            './reservation/admin-reservations/admin-reservations.component'
-          ).then((m) => m.AdminReservationsComponent),
-      },
-      /*{
-        path: 'payment',
-        loadComponent: () =>
-          import('./payment/payment.component').then(
-            (m) => m.PaymentComponent
+          import('./reservation/admin-reservations/admin-reservations.component').then(
+            (m) => m.AdminReservationsComponent
           ),
-      },*/
+      },
     ],
   },
 
-  // ❌ Errores
+  // ❌ Páginas de error
   {
     path: 'unauthorized',
     loadComponent: () =>

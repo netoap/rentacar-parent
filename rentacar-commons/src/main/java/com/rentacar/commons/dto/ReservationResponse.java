@@ -14,6 +14,8 @@ public class ReservationResponse {
     @Schema(description = "Customer Email", example = "alex@email.com")
     private String customerEmail;
 
+    private String customerName;
+
     @Schema(description = "Vehicle ID", example = "42")
     private Long vehicleId;
 
@@ -26,6 +28,8 @@ public class ReservationResponse {
     private String vehicleModel;
 
     private ReservationStatus status;
+
+    private String model;
 
     public ReservationResponse() {}
 
@@ -83,5 +87,21 @@ public class ReservationResponse {
 
     public void setStatus(ReservationStatus status) {
         this.status = status;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 }

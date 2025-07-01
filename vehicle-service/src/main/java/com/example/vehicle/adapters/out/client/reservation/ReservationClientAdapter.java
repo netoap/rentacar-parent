@@ -18,8 +18,8 @@ public class ReservationClientAdapter implements CreateReservationPort, LoadVehi
     }
 
     @Override
-    public ReservationResponse createReservation(String customerId, Long vehicleId,LocalDate startDate, LocalDate endDate) {
-        CreateReservationRequest request = new CreateReservationRequest(customerId, vehicleId, startDate, endDate);
+    public ReservationResponse createReservation(String email, String customerId, Long vehicleId,LocalDate startDate, LocalDate endDate) {
+        CreateReservationRequest request = new CreateReservationRequest(email, customerId, vehicleId, startDate, endDate);
         return reservationClient.createReservation(request);
     }
 

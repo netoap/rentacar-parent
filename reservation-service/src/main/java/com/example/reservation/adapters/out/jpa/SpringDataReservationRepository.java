@@ -38,4 +38,6 @@ public interface SpringDataReservationRepository extends JpaRepository<Reservati
     );
 
     List<ReservationEntity> findByCustomerEmailAndStatus(String email, String status);
+
+    List<ReservationEntity>  findByCustomerName(String username);
 }

@@ -5,7 +5,7 @@ export interface Reservation {
   vehicleModel: string; // nuevo campo
   startDate: string;
   endDate: string;
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'; // nuevo campo
 }
 
 

@@ -8,12 +8,13 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../../../environments/environment';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-my-reservations',
   standalone: true,
-  imports: [CommonModule, MatCardModule, FormsModule, MatCheckboxModule,MatIconModule],
+  imports: [CommonModule, RouterModule, MatCardModule, FormsModule, MatCheckboxModule,MatIconModule],
   templateUrl: './my-reservations.component.html',
   styleUrls: ['./my-reservations.component.scss'],
 })
@@ -27,11 +28,18 @@ export class MyReservationsComponent implements OnInit {
     const user = this.auth.getCurrentUser();
     if (!user) return;
 
-    
-    this.http.get<Reservation[]>(`${environment.apiBaseUrl}/reservations/mine`)
-      .subscribe((data) => {
-        this.reservations = data;
-      });
+    console.log('Usuario:', this.auth.getCurrentUser());
+
+this.http.get<Reservation[]>(`${environment.apiBaseUrl}/reservations/mine`)
+  .subscribe({
+    next: (data) => {
+      console.log('Reservas recibidas:', data);
+      this.reservations = data;
+    },
+    error: (err) => {
+      console.error('Error al cargar reservas:', err);
+    }
+  });
   }
   cancel(reservationId: number): void {
     if (!confirm('¿Estás seguro de cancelar esta reserva?')) return;

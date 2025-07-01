@@ -56,7 +56,7 @@ export class AuthService {
     return !!payload?.exp && payload.exp > now;
   }
 
-  getCurrentUser(): { email: string; role: string } | null {
+  getCurrentUser(): { email: string; role: string, username: string } | null {
     const token = localStorage.getItem('token');
     const payload = token ? decodeToken(token) : null;
 
@@ -70,13 +70,17 @@ export class AuthService {
     return {
       email: payload.email ?? '',
       role,
+      username: payload.sub ?? ''
     };
   }
 
   getRole(): string | null {
     return this.getCurrentUser()?.role ?? null;
   }
-  
+
+  getUsername(): string | null {
+    return this.getCurrentUser()?.username ?? null;     
+  }
   getRoles(): string[] {
     const token = localStorage.getItem('token');
     const payload = token ? decodeToken(token) : null;

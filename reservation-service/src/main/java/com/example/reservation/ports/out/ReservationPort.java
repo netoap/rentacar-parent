@@ -14,4 +14,5 @@ public interface ReservationPort {
     List<Reservation> findByCustomerEmailAndStatus(String email, String status);
     boolean isOverlappingReservation(Long carId, LocalDate endDate, LocalDate startDate);
 
+    List<Reservation> findByCustomerName(String username);
 }

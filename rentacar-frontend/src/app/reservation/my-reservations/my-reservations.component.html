@@ -19,7 +19,7 @@
   </p>
 
   <div *ngIf="r.status !== 'CANCELLED'">
-    <button mat-raised-button color="warn" (click)="cancel(r.id)">
+    <button mat-raised-button class="cancel-button" color="warn" (click)="cancel(r.id)" >
       <mat-icon>cancel</mat-icon> Cancelar reserva
     </button>
   </div>

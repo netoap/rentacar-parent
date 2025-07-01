@@ -82,3 +82,23 @@ mat-card-title {
 .icon {
   font-size: 20px;
 }
+button.cancel-button {
+  background-color: #4936f4; // rojo fuerte
+  color: white;
+  font-weight: 500;
+  border: none;
+  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  mat-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: #912fd3; // rojo más oscuro
+  }
+}

@@ -33,21 +33,15 @@ public class VehicleController {
     private final GetAllVehiclesQuery getAllVehiclesQuery;
     private final UpdateVehicleUseCase updateVehicleUseCase;
     private final DeleteVehicleUseCase deleteVehicleUseCase;
-    private final GetAvailableVehiclesQuery getAvailableVehiclesQuery;
-    private final RentVehicleUseCase rentVehicleUseCase;
-    private final ReturnVehicleUseCase returnVehicleUseCase;
     private final GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase;
 
 
-    public VehicleController(AddVehicleUseCase addVehicleUseCase, GetVehicleByIdQuery getVehicleByIdQuery, GetAllVehiclesQuery getAllVehiclesQuery, UpdateVehicleUseCase updateVehicleUseCase, DeleteVehicleUseCase deleteVehicleUseCase, GetAvailableVehiclesQuery getAvailableVehiclesQuery, RentVehicleUseCase rentVehicleUseCase, ReturnVehicleUseCase returnVehicleUseCase, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase) {
+    public VehicleController(AddVehicleUseCase addVehicleUseCase, GetVehicleByIdQuery getVehicleByIdQuery, GetAllVehiclesQuery getAllVehiclesQuery, UpdateVehicleUseCase updateVehicleUseCase, DeleteVehicleUseCase deleteVehicleUseCase, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase) {
         this.addVehicleUseCase = addVehicleUseCase;
         this.getVehicleByIdQuery = getVehicleByIdQuery;
         this.getAllVehiclesQuery = getAllVehiclesQuery;
         this.updateVehicleUseCase = updateVehicleUseCase;
         this.deleteVehicleUseCase = deleteVehicleUseCase;
-        this.getAvailableVehiclesQuery = getAvailableVehiclesQuery;
-        this.rentVehicleUseCase = rentVehicleUseCase;
-        this.returnVehicleUseCase = returnVehicleUseCase;
         this.getVehicleAvailabilityUseCase = getVehicleAvailabilityUseCase;
     }
 
@@ -75,25 +69,6 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addVehicleUseCase.addVehicle(request));
     }
 
-    @GetMapping("/available-range")
-    @Operation(summary = "Listar vehículos disponibles entre fechas")
-    public ResponseEntity<List<VehicleResponse>> getAvailableBetweenDates(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-
-        return ResponseEntity.ok(getAvailableVehiclesQuery.getAvailableVehicles(start, end));
-    }
-
-
-//    @GetMapping("/available")
-//    @Operation(summary = "Get vehicles available in a date range")
-//    public ResponseEntity<List<VehicleResponse>> getAvailableVehicleByDates(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end
-//    ) {
-//        return ResponseEntity.ok(getAvailableVehiclesQuery.getAvailableVehicles(start, end));
-//    }
-
 
     @GetMapping("/{id}")
     @Operation(summary = "Get vehicle by ID")
@@ -116,8 +91,6 @@ public class VehicleController {
                 .toList();
         return ResponseEntity.ok(results);
     }
-
-
 
     @GetMapping
     @Operation(summary = "Listar vehículos paginados")
@@ -145,25 +118,6 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Rent a vehicle")
-    @PostMapping("/rent")
-    public ResponseEntity<Void> rentVehicle(@Valid @RequestBody RentVehicleRequest request) {
-        rentVehicleUseCase.rentVehicle(
-                request.getCustomerEmail(),
-                request.getVehicleId(),
-                request.getStartDate(),
-                request.getEndDate()
-        );
-        return ResponseEntity.ok().build();
-    }
-
-
-    @Operation(summary = "Return a rented vehicle")
-    @PostMapping("/return")
-    public ResponseEntity<Void> returnVehicle(@RequestParam Long vehicleId) {
-        returnVehicleUseCase.returnVehicle(vehicleId);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/vehicles/{vehicleId}/availability")
     @Operation(summary = "Get booked dates for a vehicle")

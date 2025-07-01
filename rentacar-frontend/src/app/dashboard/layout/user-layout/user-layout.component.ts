@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { inject } from '@angular/core';
 import { AuthService } from '../../../auth/auth.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-layout',
@@ -15,6 +16,7 @@ import { AuthService } from '../../../auth/auth.service';
   imports: [
     CommonModule,
     RouterOutlet,
+    RouterModule,
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,

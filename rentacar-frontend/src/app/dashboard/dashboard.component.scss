@@ -1,7 +1,10 @@
 mat-card {
   margin-bottom: 1.5rem;
 }
-
+.user-header-card {
+  padding: 1rem;         // o padding: 16px;
+  margin-bottom: 1rem;   // opcional: separación inferior
+}
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

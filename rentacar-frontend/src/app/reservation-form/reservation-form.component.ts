@@ -61,7 +61,7 @@ export class ReservationFormComponent implements OnInit {
         startDate: ['', Validators.required],
         endDate: ['', Validators.required],
         location: [{ value: 'Aeropuerto de Madrid', disabled: true }],
-        vehicleModel: [{ value: '', disabled: true }],
+        vehicleModel: [{ value: '' }],
         email: [{ value: this.authService.getEmail(), disabled: true }],
       },
       {
@@ -107,7 +107,9 @@ export class ReservationFormComponent implements OnInit {
 
     const request = {
       customerEmail: this.authService.getEmail()?? '',
+      customerName: this.authService.getUsername ()?? '',
       vehicleId: +vehicleId,
+      vehicleModel: this.form.value.vehicleModel,
       startDate: this.formatDate(startDate),
       endDate: this.formatDate(endDate),
     };
@@ -116,7 +118,7 @@ export class ReservationFormComponent implements OnInit {
     this.reservationService.createReservation(request).subscribe({
       next: () =>{
         this.snackBar.open('Reserva creada', 'Cerrar', { duration: 3000 });
-        this.router.navigate(['/dashboard/my-reservations']); // 👈 redirección automática
+        this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
         const message =

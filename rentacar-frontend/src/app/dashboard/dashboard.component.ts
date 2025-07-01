@@ -2,10 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MatCardModule, MatIconModule],
+  imports: [MatCardModule, MatIconModule, RouterModule,],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })

@@ -14,6 +14,8 @@ public class CreateReservationRequest {
     @jakarta.validation.constraints.Email
     @Schema(description = "Customer Email", example = "name@email.com", required = true)
     private String customerEmail;
+    private String customerName;
+    private String vehicleModel;
 
     @NotNull
     @Positive
@@ -34,8 +36,9 @@ public class CreateReservationRequest {
     public CreateReservationRequest() {
     }
 
-    public CreateReservationRequest(String customerEmail, Long vehicleId, LocalDate startDate, LocalDate endDate) {
+    public CreateReservationRequest(String customerEmail, String customerName, Long vehicleId, LocalDate startDate, LocalDate endDate) {
         this.customerEmail = customerEmail;
+        this.customerName = customerName;
         this.vehicleId = vehicleId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -47,6 +50,14 @@ public class CreateReservationRequest {
 
     public void setCustomerEmail(String customerEmail) {
         this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public Long getVehicleId() {
@@ -71,5 +82,13 @@ public class CreateReservationRequest {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public String getVehicleModel() {
+        return vehicleModel;
+    }
+
+    public void setVehicleModel(String vehicleModel) {
+        this.vehicleModel = vehicleModel;
     }
 }

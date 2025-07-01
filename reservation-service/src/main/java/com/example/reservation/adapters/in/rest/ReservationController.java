@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.example.reservation.adapters.out.feign.VehicleClient;
 @Tag(name = "Reservations", description = "Endpoints for managing reservations")
 @RestController
 @RequestMapping("/api/v1/reservations")
@@ -30,15 +29,14 @@ public class ReservationController {
     private final CreateReservationUseCase createReservationUseCase;
     private final GetReservationsUseCase getReservationsUseCase;
     private final CancelReservationUseCase cancelReservationUseCase;
-    private final VehicleClient vehicleClient;
+
     private final GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase;
     private final UpdateReservationUseCase updateReservationUseCase;
 
-    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsUseCase getReservationsUseCase, CancelReservationUseCase cancelReservationUseCase, VehicleClient vehicleClient, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase, UpdateReservationUseCase updateReservationUseCase) {
+    public ReservationController(CreateReservationUseCase reservationUseCase, GetReservationsUseCase getReservationsUseCase, CancelReservationUseCase cancelReservationUseCase, GetVehicleAvailabilityUseCase getVehicleAvailabilityUseCase, UpdateReservationUseCase updateReservationUseCase) {
         this.createReservationUseCase = reservationUseCase;
         this.getReservationsUseCase = getReservationsUseCase;
         this.cancelReservationUseCase = cancelReservationUseCase;
-        this.vehicleClient = vehicleClient;
         this.getVehicleAvailabilityUseCase = getVehicleAvailabilityUseCase;
         this.updateReservationUseCase = updateReservationUseCase;
     }
@@ -48,13 +46,14 @@ public class ReservationController {
     public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody CreateReservationRequest request) {
 
         Reservation reservation = createReservationUseCase.createReservation(
+                request.getVehicleModel(),
                 request.getCustomerEmail(),
+                request.getCustomerName(),
                 request.getVehicleId(),
                 request.getStartDate(),
                 request.getEndDate()
         );
 
-        ReservationResponse reservationResponse = new ReservationResponse();
         return new ResponseEntity<>(JpaReservationMapper.toResponse(reservation), HttpStatus.CREATED);
     }
 
@@ -68,6 +67,24 @@ public class ReservationController {
     public ResponseEntity<Void> markAsPaid(@PathVariable("id") Long id) {
         updateReservationUseCase.markAsPaid(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/mine")
+    @Operation(
+            summary = "Get reservations for the currently authenticated user",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public ResponseEntity<List<ReservationResponse>> getMyReservations() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        //query a bd para ver se esse username
+        List<Reservation> reservations = getReservationsUseCase.getByCustomerName(username);
+
+        List<ReservationResponse> response = reservations.stream()
+                .map(JpaReservationMapper::toResponse)
+
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -84,27 +101,12 @@ public class ReservationController {
     public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
         cancelReservationUseCase.cancel(id); // sets status to CANCELLED
         Reservation reservation = getReservationsUseCase.getById(id);
-        vehicleClient.updateAvailability(reservation.getCarId(), true);
         return ResponseEntity.noContent().build();
     }
 
 
 
-    @GetMapping("/mine")
-    @Operation(
-            summary = "Get reservations for the currently authenticated user",
-            security = @SecurityRequirement(name = "bearerAuth")
-    )
-    public ResponseEntity<List<ReservationResponse>> getMyReservations() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Reservation> reservations = getReservationsUseCase.getByCustomerEmail(email);
 
-        List<ReservationResponse> response = reservations.stream()
-                .map(JpaReservationMapper::toResponse)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/check")
     public ResponseEntity<Boolean> isVehicleAvailable(

@@ -11,4 +11,6 @@ public interface GetReservationsUseCase {
     List<Reservation> getByCustomerEmail(String email);
     Reservation getById(Long id);
     List<ReservationResponse> findReservationsByEmailAndStatus(String email, ReservationStatus status);
+
+    List<Reservation> getByCustomerName(String username);
 }

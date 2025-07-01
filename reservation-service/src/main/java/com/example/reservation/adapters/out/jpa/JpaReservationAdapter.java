@@ -68,4 +68,10 @@ public class JpaReservationAdapter implements ReservationPort {
     public boolean isOverlappingReservation(Long carId, LocalDate endDate, LocalDate startDate) {
         return repository.isOverlappingReservation(carId, endDate, startDate);
     }
+
+    @Override
+    public List<Reservation> findByCustomerName(String username) {
+        List<ReservationEntity> reservations = repository.findByCustomerName(username);
+        return reservations.stream().map(JpaReservationMapper::toDomain).collect(Collectors.toList());
+    }
 }

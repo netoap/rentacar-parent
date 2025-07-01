@@ -5,7 +5,7 @@
 
   <ng-container *ngIf="isLoggedIn$ | async; else guestLinks">
     <button mat-button routerLink="/dashboard">Panel</button>
-    <button mat-button routerLink="/my-reservations">Mis Reservas</button>
+    <button mat-button routerLink="/dashboard/my-reservations">Mis Reservas</button>
     <button mat-button *ngIf="role === 'ADMIN'" routerLink="/admin">Admin</button>
     <button mat-button (click)="logout()">Cerrar sesión</button>
 

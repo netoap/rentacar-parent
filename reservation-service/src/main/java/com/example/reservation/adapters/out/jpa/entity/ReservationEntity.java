@@ -18,6 +18,8 @@ public class ReservationEntity {
     @NotNull(message = "Customer email must not be null")
     private String customerEmail;
 
+    private String customerName;
+
     private Long carId;
 
     private LocalDate startDate;
@@ -26,43 +28,74 @@ public class ReservationEntity {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
+    @Column(name = "vehicle_model")
+    private String vehicleModel;
+
+
     public ReservationEntity() {
     }
 
-//    public ReservationEntity(String customerEmail, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
-//        this.customerEmail = customerEmail;
-//        this.carId = carId;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.status = status;
-//    }
-//
-//    public ReservationEntity(Long id, String customerEmail, Long carId, LocalDate startDate, LocalDate endDate, ReservationStatus status) {
-//        this.id = id;
-//        this.customerEmail = customerEmail;
-//        this.carId = carId;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.status = status;
-//    }
+    public Long getId() {
+        return id;
+    }
 
-    // Getters y setters
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
 
-    public String getCustomerEmail() { return customerEmail; }
-    public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
 
-    public Long getCarId() { return carId; }
-    public void setCarId(Long carId) { this.carId = carId; }
+    public String getCustomerName() {
+        return customerName;
+    }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public Long getCarId() {
+        return carId;
+    }
 
-    public ReservationStatus getStatus() { return status; }
-    public void setStatus(ReservationStatus status) { this.status = status; }
+    public void setCarId(Long carId) {
+        this.carId = carId;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
+
+    public String getVehicleModel() {
+        return vehicleModel;
+    }
+
+    public void setVehicleModel(String vehicleModel) {
+        this.vehicleModel = vehicleModel;
+    }
 }
