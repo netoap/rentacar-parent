@@ -50,6 +50,7 @@ public class AuthController {
                 .body(new UserProfileResponse(
                         user.getId(),
                         user.getUsername(),
+                        user.getEmail(),
                         new ArrayList<>(user.getRoles()),
                         user.getCreatedAt(),
                         user.isActive()
@@ -65,6 +66,7 @@ public class AuthController {
         return ResponseEntity.ok(new UserProfileResponse(
                 user.getId(),
                 user.getUsername(),
+                user.getEmail(),
                 new ArrayList<>(user.getRoles()),
                 user.getCreatedAt(),
                 user.isActive()

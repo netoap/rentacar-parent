@@ -106,7 +106,7 @@ export class ReservationFormComponent implements OnInit {
     const { startDate, endDate, vehicleId } = this.form.value;
 
     const request = {
-      customerEmail: '',
+      customerEmail: this.authService.getEmail()?? '',
       vehicleId: +vehicleId,
       startDate: this.formatDate(startDate),
       endDate: this.formatDate(endDate),

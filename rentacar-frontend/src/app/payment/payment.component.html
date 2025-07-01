@@ -1,0 +1,14 @@
+<mat-card *ngFor="let r of reservations" class="mb-3">
+  <mat-card-title>Reserva: {{ r.id }}</mat-card-title>
+  <mat-card-content>
+    <p>Vehículo: {{ r.vehicle.model }}</p>
+    <p>Fechas: {{ r.startDate | date:'shortDate' }} - {{ r.endDate | date:'shortDate' }}</p>
+    <p>Estado: {{ r.status }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="pay(r.id)">
+       <mat-icon>payment</mat-icon>
+      Pagar
+    </button>
+  </mat-card-actions>
+</mat-card>

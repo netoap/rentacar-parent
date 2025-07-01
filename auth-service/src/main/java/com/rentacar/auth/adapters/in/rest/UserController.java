@@ -45,7 +45,7 @@ public class UserController {
         String username = authentication.getName();
         return loadUserPort.findByUsername(username)
                 .map(user -> ResponseEntity.ok(
-                        new UserProfileResponse(user.getId(), user.getUsername(), new ArrayList<>(user.getRoles()), user.getCreatedAt(), user.isActive()))
+                        new UserProfileResponse(user.getId(), user.getUsername(),user.getEmail(), new ArrayList<>(user.getRoles()), user.getCreatedAt(), user.isActive()))
                 )
                 .orElse(ResponseEntity.status(404).build());
     }
@@ -73,7 +73,7 @@ public class UserController {
         Page<UserEntity> userPage = loadUserPort.findAll(criteria, pageable);
 
         List<UserProfileResponse> userProfiles = userPage.getContent().stream()
-                .map(user -> new UserProfileResponse(user.getId(), user.getUsername(), new ArrayList<>(user.getRoles()), user.getCreatedAt(), user.isActive()))
+                .map(user -> new UserProfileResponse(user.getId(), user.getUsername(),user.getEmail(), new ArrayList<>(user.getRoles()), user.getCreatedAt(), user.isActive()))
                 .toList();
 
         PagedResponse<UserProfileResponse> response = new PagedResponse<>(
@@ -100,7 +100,7 @@ public class UserController {
     ) {
         String encoded = passwordEncoder.encode(request.getNewPassword());
         UserEntity user = updateUserPort.updatePassword(id, encoded);
-        return ResponseEntity.ok(new UserProfileResponse(user.getId(), user.getUsername(), new ArrayList<>(user.getRoles()), user.getCreatedAt(), user.isActive()));
+        return ResponseEntity.ok(new UserProfileResponse(user.getId(), user.getUsername(),user.getEmail() ,new ArrayList<>(user.getRoles()), user.getCreatedAt(), user.isActive()));
     }
 
 
@@ -112,7 +112,7 @@ public class UserController {
             @Valid @RequestBody UpdateRolesRequest request
     ) {
         UserEntity updated = updateUserPort.updateRoles(id, request.getRoles());
-        return ResponseEntity.ok(new UserProfileResponse(updated.getId(), updated.getUsername(), new ArrayList<>(updated.getRoles()), updated.getCreatedAt(), updated.isActive()));
+        return ResponseEntity.ok(new UserProfileResponse(updated.getId(), updated.getUsername(),updated.getEmail(), new ArrayList<>(updated.getRoles()), updated.getCreatedAt(), updated.isActive()));
     }
 
 
@@ -124,7 +124,7 @@ public class UserController {
             @RequestBody UpdateStatusRequest request
     ) {
         UserEntity updated = updateUserPort.updateStatus(id, request.isEnabled());
-        return ResponseEntity.ok(new UserProfileResponse(updated.getId(), updated.getUsername(), new ArrayList<>(updated.getRoles()), updated.getCreatedAt(), updated.isActive()));
+        return ResponseEntity.ok(new UserProfileResponse(updated.getId(), updated.getUsername(),updated.getEmail(), new ArrayList<>(updated.getRoles()), updated.getCreatedAt(), updated.isActive()));
     }
 
     @Operation(summary = "Get user by ID", security = @SecurityRequirement(name = "bearerAuth"))
@@ -135,6 +135,7 @@ public class UserController {
                 .map(user -> ResponseEntity.ok(new UserProfileResponse(
                         user.getId(),
                         user.getUsername(),
+                        user.getEmail(),
                         new ArrayList<>(user.getRoles()),
                         user.getCreatedAt(),
                         user.isActive()

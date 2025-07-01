@@ -78,6 +78,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'payment',
+        loadComponent: () =>
+          import('./payment/payment.component').then(
+            (m) => m.PaymentComponent 
+          ),
+      },
+
+      {
         path: 'my-reservations',
         loadComponent: () =>
           import(
@@ -148,13 +156,13 @@ export const routes: Routes = [
             './reservation/admin-reservations/admin-reservations.component'
           ).then((m) => m.AdminReservationsComponent),
       },
-      {
+      /*{
         path: 'payment',
         loadComponent: () =>
-          import('./payment/payment-list.component').then(
-            (m) => m.PaymentListComponent
+          import('./payment/payment.component').then(
+            (m) => m.PaymentComponent
           ),
-      },
+      },*/
     ],
   },
 

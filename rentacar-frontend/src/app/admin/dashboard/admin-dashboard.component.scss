@@ -8,6 +8,11 @@ mat-card {
   gap: 1rem;
 }
 
+.admin-header-card {
+  padding: 1rem;         // o padding: 16px;
+  margin-bottom: 1rem;   // opcional: separación inferior
+}
+
 .dashboard-card {
   cursor: pointer;
   text-align: center;
